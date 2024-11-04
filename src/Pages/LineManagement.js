@@ -1,5 +1,4 @@
-import {useState} from 'react';
-import {styled} from '@mui/material/styles';
+import React, {useState, useEffect} from 'react';
 import {
     Box,
     Typography,
@@ -20,63 +19,35 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 
-const StyledTableCell = styled(TableCell)(({theme}) => ({
-    [`&.MuiTableCell-head`]: {
-        backgroundColor: '#EEEEEE',
-        color: theme.palette.common.black,
-        fontWeight: 'bold',
-        fontSize: '1rem'
-    },
-    [`&.MuiTableCell-body`]: {
-        fontSize: 14,
-        padding: '8px'
-    }
-}));
-
 const LineManagement = () => {
-    const lines = [
-        {
-            id: 1,
-            name: 'PCL#1',
-            location: 'Location 1'
-        }, {
-            id: 2,
-            name: 'PCL#2',
-            location: 'Location 2'
-        }, {
-            id: 3,
-            name: 'PCL#3',
-            location: 'Location 3'
-        }, {
-            id: 4,
-            name: 'PCL#4',
-            location: 'Location 4'
-        }, {
-            id: 5,
-            name: 'PCL#5',
-            location: 'Location 5'
-        }
-    ];
-
+    const [lines, setLines] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    useEffect(() => {
+        fetch('http://localhost:5000/line')
+            .then(response => response.json())
+            .then(data => {
+                setLines(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                setLoading(false);
+            });
+    }, []);
 
-    const handleChangeRowsPerPage = (event) => {
+    const handleChangePage = (event, newPage) => setPage(newPage);
+    const handleChangeRowsPerPage = event => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
-    };
+    const handleSearchChange = event => setSearchTerm(event.target.value);
 
     const filteredLines = lines.filter(
-        line => line.name.toLowerCase().includes(searchTerm.toLowerCase())
+        line => line.kode_line && line.kode_line.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -131,7 +102,6 @@ const LineManagement = () => {
                             value={searchTerm}
                             onChange={handleSearchChange}/>
                     </Box>
-
                     <Button
                         variant="contained"
                         sx={{
@@ -150,36 +120,37 @@ const LineManagement = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <StyledTableCell>No</StyledTableCell>
-                                <StyledTableCell>Line Name</StyledTableCell>
-                                <StyledTableCell>Location</StyledTableCell>
-                                <StyledTableCell>Action</StyledTableCell>
+                                <TableCell>No</TableCell>
+                                <TableCell>Line Name</TableCell>
+                                <TableCell>Location</TableCell>
+                                <TableCell>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {
-                                filteredLines.length === 0
+                                loading
                                     ? (
                                         <TableRow>
-                                            <StyledTableCell colSpan={4} align="center">
-                                                <Typography variant="body2" color="textSecondary">
-                                                    No Line found
-                                                </Typography>
-                                            </StyledTableCell>
+                                            <TableCell colSpan={4} align="center">
+                                                Loading...
+                                            </TableCell>
                                         </TableRow>
                                     )
-                                    : (
-                                        filteredLines.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((line, index) => (
-                                            <TableRow key={line.id}>
-                                                <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                                                <StyledTableCell>{line.name}</StyledTableCell>
-                                                <StyledTableCell>{line.location}</StyledTableCell>
-                                                <StyledTableCell>
-                                                    <Box
-                                                        sx={{
-                                                            display: 'flex',
-                                                            justifyContent: 'flex-start'
-                                                        }}>
+                                    : filteredLines.length === 0
+                                        ? (
+                                            <TableRow>
+                                                <TableCell colSpan={4} align="center">
+                                                    No Line found
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                        : (
+                                            filteredLines.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((line, index) => (
+                                                <TableRow key={line.id}>
+                                                    <TableCell>{index + 1 + page * rowsPerPage}</TableCell>
+                                                    <TableCell>{line.kode_line}</TableCell>
+                                                    <TableCell>{line.lokasi}</TableCell>
+                                                    <TableCell>
                                                         <Button
                                                             variant="contained"
                                                             sx={{
@@ -191,7 +162,8 @@ const LineManagement = () => {
                                                                 }
                                                             }}
                                                             startIcon={<EditIcon />
-}/>
+                                                            }
+                                                        />
                                                         <Button
                                                             variant="contained"
                                                             sx={{
@@ -204,12 +176,12 @@ const LineManagement = () => {
                                                                 }
                                                             }}
                                                             startIcon={<DeleteIcon />
-}/>
-                                                    </Box>
-                                                </StyledTableCell>
-                                            </TableRow>
-                                        ))
-                                    )
+                                                            }
+                                                        />
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )
                             }
                         </TableBody>
                     </Table>
