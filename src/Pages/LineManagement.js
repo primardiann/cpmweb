@@ -18,6 +18,20 @@ import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
+import {styled} from '@mui/material/styles';
+
+const StyledTableCell = styled(TableCell)(({theme}) => ({
+    [`&.MuiTableCell-head`]: {
+        backgroundColor: '#EEEEEE',
+        color: theme.palette.common.black,
+        fontWeight: 'bold',
+        fontSize: '1rem'
+    },
+    [`&.MuiTableCell-body`]: {
+        fontSize: 14,
+        padding: '8px'
+    }
+}));
 
 const LineManagement = () => {
     const [lines, setLines] = useState([]);
@@ -120,10 +134,10 @@ const LineManagement = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>No</TableCell>
-                                <TableCell>Line Name</TableCell>
-                                <TableCell>Location</TableCell>
-                                <TableCell>Action</TableCell>
+                                <StyledTableCell>No</StyledTableCell>
+                                <StyledTableCell>Line Name</StyledTableCell>
+                                <StyledTableCell>Location</StyledTableCell>
+                                <StyledTableCell>Action</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -147,10 +161,10 @@ const LineManagement = () => {
                                         : (
                                             filteredLines.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((line, index) => (
                                                 <TableRow key={line.id}>
-                                                    <TableCell>{index + 1 + page * rowsPerPage}</TableCell>
-                                                    <TableCell>{line.kode_line}</TableCell>
-                                                    <TableCell>{line.lokasi}</TableCell>
-                                                    <TableCell>
+                                                    <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
+                                                    <StyledTableCell>{line.kode_line}</StyledTableCell>
+                                                    <StyledTableCell>{line.lokasi}</StyledTableCell>
+                                                    <StyledTableCell>
                                                         <Button
                                                             variant="contained"
                                                             sx={{
@@ -178,7 +192,7 @@ const LineManagement = () => {
                                                             startIcon={<DeleteIcon />
                                                             }
                                                         />
-                                                    </TableCell>
+                                                    </StyledTableCell>
                                                 </TableRow>
                                             ))
                                         )
