@@ -13,14 +13,18 @@ import {
     Paper,
     TablePagination,
     TextField,
-    Divider
+    Divider,
+    Modal,
+    IconButton,
+    CircularProgress
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
+import CloseIcon from '@mui/icons-material/Close';
 
-// Styled TableCell untuk styling tabel
+// Styled TableCell for table styling
 const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.MuiTableCell-head`]: {
         backgroundColor: '#EEEEEE',
@@ -34,25 +38,102 @@ const StyledTableCell = styled(TableCell)(({theme}) => ({
     }
 }));
 
-const UserManagement = () => {
+function UserManagement() {
     const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [openModal, setOpenModal] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState(
+        {user_id: '', nama: '', email: '', role: '', no_hp: ''}
+    );
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetch('http://localhost:5000/users')
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const method = isEditing
+            ? 'PUT'
+            : 'POST';
+        const url = isEditing
+            ? `http://localhost:5000/users/${formData.user_id}`
+            : 'http://localhost:5000/users';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
             .then(response => response.json())
             .then(data => {
-                setUsers(data);
-                setLoading(false);
+                if (isEditing) {
+                    setUsers(users.map(item => (
+                        item.user_id === formData.user_id
+                            ? formData
+                            : item
+                    )));
+                } else {
+                    setUsers([
+                        ...users,
+                        formData
+                    ]);
+                }
+                handleCloseModal();
             })
-            .catch(error => {
+            .catch(error => console.error('Error:', error));
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/users');
+                const data = await response.json();
+                setUsers(data);
+            } catch (error) {
                 console.error('Error fetching data:', error);
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+        fetchData();
     }, []);
+
+    const handleTambahData = () => {
+        setIsEditing(false);
+        setFormData({user_id: '', nama: '', email: '', role: '', no_hp: ''});
+        setOpenModal(true);
+    };
+
+    const handleEditData = (data) => {
+        setIsEditing(true);
+        setFormData(data);
+        setOpenModal(true);
+    };
+
+    const handleDeleteData = (user_id) => {
+        fetch(`http://localhost:5000/users/${user_id}`, {method: 'DELETE'})
+            .then(
+                () => {
+                    setUsers(users.filter(item => item.user_id !== user_id));
+                }
+            )
+            .catch(error => console.error('Error:', error));
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+        setFormData({user_id: '', nama: '', email: '', role: '', no_hp: ''});
+    };
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: value
+        }));
+    };
 
     const handleChangePage = (event, newPage) => setPage(newPage);
     const handleChangeRowsPerPage = event => {
@@ -119,6 +200,7 @@ const UserManagement = () => {
                     </Box>
                     <Button
                         variant="contained"
+                        onClick={handleTambahData}
                         sx={{
                             bgcolor: '#005DB8',
                             color: 'white'
@@ -149,7 +231,7 @@ const UserManagement = () => {
                                     ? (
                                         <TableRow>
                                             <TableCell colSpan={6} align="center">
-                                                Loading...
+                                                <CircularProgress/>
                                             </TableCell>
                                         </TableRow>
                                     )
@@ -176,6 +258,7 @@ const UserManagement = () => {
                                                                 justifyContent: 'flex-start'
                                                             }}>
                                                             <Button
+                                                                onClick={() => handleEditData(user)}
                                                                 variant="contained"
                                                                 sx={{
                                                                     bgcolor: '#FF9707',
@@ -186,8 +269,10 @@ const UserManagement = () => {
                                                                     }
                                                                 }}
                                                                 startIcon={<EditIcon />
-}/>
+                                                                }
+                                                            />
                                                             <Button
+                                                                onClick={() => handleDeleteData(user.user_id)}
                                                                 variant="contained"
                                                                 sx={{
                                                                     bgcolor: '#FF1707',
@@ -199,7 +284,8 @@ const UserManagement = () => {
                                                                     }
                                                                 }}
                                                                 startIcon={<DeleteIcon />
-}/>
+                                                                }
+                                                            />
                                                         </Box>
                                                     </StyledTableCell>
                                                 </TableRow>
@@ -217,10 +303,102 @@ const UserManagement = () => {
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}/>
+                    onRowsPerPageChange={handleChangeRowsPerPage}/> {/* Modal for Adding/Editing User */}
+                <Modal open={openModal} onClose={handleCloseModal}>
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: 400,
+                            bgcolor: 'background.paper',
+                            boxShadow: 24,
+                            borderRadius: 2,
+                            p: 3
+                        }}>
+                        <Typography
+                            variant="h6"
+                            gutterBottom="gutterBottom"
+                            sx={{
+                                textAlign: 'center'
+                            }}>
+                            {
+                                isEditing
+                                    ? 'Edit User'
+                                    : 'Add New User'
+                            }
+                        </Typography>
+                        <IconButton
+                            onClick={handleCloseModal}
+                            sx={{
+                                position: 'absolute',
+                                top: 10,
+                                right: 10
+                            }}>
+                            <CloseIcon/>
+                        </IconButton>
+                        <form onSubmit={handleSubmit}>
+                            <TextField
+                                fullWidth="fullWidth"
+                                variant="outlined"
+                                margin="dense"
+                                label="Name"
+                                name="nama"
+                                value={formData.nama}
+                                onChange={handleChange}
+                                required="required"/>
+                            <TextField
+                                fullWidth="fullWidth"
+                                variant="outlined"
+                                margin="dense"
+                                label="Email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required="required"/>
+                            <TextField
+                                fullWidth="fullWidth"
+                                variant="outlined"
+                                margin="dense"
+                                label="Role"
+                                name="role"
+                                value={formData.role}
+                                onChange={handleChange}
+                                required="required"/>
+                            <TextField
+                                fullWidth="fullWidth"
+                                variant="outlined"
+                                margin="dense"
+                                label="Phone"
+                                name="no_hp"
+                                value={formData.no_hp}
+                                onChange={handleChange}
+                                required="required"/>
+                            <Button
+                                type="submit"
+                                fullWidth="fullWidth"
+                                variant="contained"
+                                sx={{
+                                    mt: 2,
+                                    bgcolor: '#0055A8',
+                                    color: 'white',
+                                    '&:hover' : {
+                                        bgcolor: '#004a99'
+                                    }
+                                }}>
+                                {
+                                    isEditing
+                                        ? 'Save Changes'
+                                        : 'Add User'
+                                }
+                            </Button>
+                        </form>
+                    </Box>
+                </Modal>
             </Paper>
         </Box>
     );
-};
+}
 
 export default UserManagement;

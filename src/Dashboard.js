@@ -77,11 +77,13 @@ const Dashboard = () => {
                 bgcolor: '#f0f2f5',
                 p: 3
             }}>
+            {/* AppBar */}
             <AppBar
                 position="fixed"
                 sx={{
                     zIndex: 1200,
-                    bgcolor: '#FFFFFF'
+                    bgcolor: '#FFFFFF',
+                    top: 0
                 }}>
                 <Toolbar>
                     <IconButton
@@ -102,6 +104,7 @@ const Dashboard = () => {
                 </Toolbar>
             </AppBar>
 
+            {/* Drawer */}
             <Drawer
                 variant="persistent"
                 open={open}
@@ -210,12 +213,13 @@ const Dashboard = () => {
                 </Box>
             </Drawer>
 
+            {/* Konten Utama */}
             <Box
                 component="main"
                 sx={{
                     flexGrow: 1,
                     p: 3,
-                    mt: 8,
+                    mt: 8, // Memberikan ruang untuk AppBar yang fixed
                     transition: 'margin-left 0.3s',
                     ml: open
                         ? '240px'
@@ -259,7 +263,6 @@ const Dashboard = () => {
                                         </CardContent>
                                     </Card>
                                 </Grid>
-
                                 {/* Kartu Total Kategori */}
                                 <Grid item="item" xs={12} sm={6} md={3}>
                                     <Card
@@ -273,7 +276,6 @@ const Dashboard = () => {
                                         </CardContent>
                                     </Card>
                                 </Grid>
-
                                 {/* Kartu Total Mesin */}
                                 <Grid item="item" xs={12} sm={6} md={3}>
                                     <Card
@@ -287,7 +289,6 @@ const Dashboard = () => {
                                         </CardContent>
                                     </Card>
                                 </Grid>
-
                                 {/* Kartu Part Specification */}
                                 <Grid item="item" xs={12} sm={6} md={3}>
                                     <Card
@@ -302,13 +303,11 @@ const Dashboard = () => {
                                     </Card>
                                 </Grid>
                             </Grid>
-
                             <Box
                                 sx={{
                                     mt: 4
                                 }}/>
-
-                            {/* Kartu untuk Pie Chart dan Judul */
+                            {/* Kartu untuk Pie Chart */
                         }
                         <Card
                             sx={{
@@ -340,14 +339,12 @@ const Dashboard = () => {
                                 <PieChart width={200} height={200}>
                                     <Pie
                                         data={pieChartData}
-                                        cx={100}
-                                        cy={100}
-                                        innerRadius={40}
+                                        dataKey="value"
+                                        cx="50%"
+                                        cy="50%"
                                         outerRadius={80}
                                         fill="#8884d8"
-                                        dataKey="value"
-                                        animationBegin={0}
-                                        animationDuration={800}
+                                        animationDuration={3000}
                                         key={animationKey}>
                                         {
                                             pieChartData.map(
