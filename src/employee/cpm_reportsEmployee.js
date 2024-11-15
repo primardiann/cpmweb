@@ -120,9 +120,21 @@ const ChangePartManagementReportsEmployee = () => {
     const [categoryFilter, setCategoryFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');
     const [open, setOpen] = useState(false);
+    const [openDetailModal, setOpenDetailModal] = useState(false);
+    const [selectedReport, setSelectedReport] = useState(null);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const handleOpenDetailModal = (report) => {
+        setSelectedReport(report);
+        setOpenDetailModal(true);
+    };
+
+    const handleCloseDetailModal = () => {
+        setOpenDetailModal(false);
+        setSelectedReport(null);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -265,7 +277,7 @@ const ChangePartManagementReportsEmployee = () => {
                         sx={{
                                color: index === 0 ? 'green' : 
                                index === 1 ? 'red' : 
-                               'yellow', fontSize:'14px'
+                               '#FFCC01', fontSize:'14px'
                             }}>
                             #AUTO
                   </Typography>
@@ -329,7 +341,8 @@ const ChangePartManagementReportsEmployee = () => {
                                                 </Button>
                                             </StyledTableCell>
                                             <StyledTableCell>
-                                                    <Card
+                                            <Card
+                                            onClick={() => handleOpenDetailModal(report)}
                                                         sx={{
                                                             width: '80px',
                                                             height: '40px',
@@ -372,7 +385,127 @@ const ChangePartManagementReportsEmployee = () => {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
+
+              {/* Detail Modal CPM */}
+  <Dialog open={openDetailModal} onClose={handleCloseDetailModal} maxWidth="md" fullWidth>
+    <DialogTitle>Detail CPM Reports</DialogTitle>
+    <DialogContent>
+        {/* Lines */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+            <Typography variant="body1" sx={{ width: '202px', height: '30px', padding: '5px 8px' }}>Lines:</Typography>
+            <TextField fullWidth value={selectedReport?.line || ''} disabled sx={{ color: 'black' }}/>
         </Box>
+
+        {/* Report ID */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>Report ID:</Typography>
+            <TextField fullWidth value={`#${selectedReport?.id || ''}`} disabled />
+        </Box>
+
+        {/* Machine Name/ID */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Machine Name/ID:</Typography>
+            <TextField fullWidth value={selectedReport?.machineName || ''} disabled />
+        </Box>
+
+        {/* Machine Category */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '182px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Machine Category:</Typography>
+            <TextField fullWidth value={selectedReport?.category || ''} disabled />
+        </Box>
+
+        {/* Specifications Table */}
+        <TableContainer component={Paper} sx={{ mt: 2 }}>
+            <Table>
+                <TableHead sx={{ backgroundColor: '#EBEBEB' }}>
+                    <TableRow>
+                        <TableCell sx={{ fontSize: '16px' }}>Specification</TableCell>
+                        <TableCell sx={{ fontSize: '16px' }}>Model Running</TableCell>
+                        <TableCell sx={{ fontSize: '16px' }}>Actual Part</TableCell>
+                        <TableCell sx={{ fontSize: '16px' }}>Qty</TableCell>
+                        <TableCell sx={{ fontSize: '16px' }}>Judgment</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                        <TableRow>
+                            <TableCell>Specification 1</TableCell>
+                            <TableCell>Model Running 1</TableCell>
+                            <TableCell>
+                                <TextField size="small" value="Actual Part 1" sx={{ color: 'black', fontSize:'14px' }} />
+                            </TableCell>
+                            <TableCell>
+                                <TextField size="small" value="10" sx={{ color: 'black', fontSize:'14px'}} />
+                            </TableCell>
+                            <TableCell>
+                                <Typography sx={{ color: 'green', fontSize: '14px' }}>#OK</Typography>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>Specification 2</TableCell>
+                            <TableCell>Model Running 2</TableCell>
+                            <TableCell>
+                                <TextField size="small" value="Actual Part 2" sx={{ color: 'black', fontSize:'14px' }} />
+                            </TableCell>
+                            <TableCell>
+                                <TextField size="small" value="15" sx={{ color: 'black', fontSize:'14px' }} />
+                            </TableCell>
+                            <TableCell>
+                                <Typography sx={{ color: 'red', fontSize: '14px' }}>#NO</Typography>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>Specification 3</TableCell>
+                            <TableCell>Model Running 3</TableCell>
+                            <TableCell>
+                                <TextField size="small" value="Actual Part 3" sx={{ color: 'black', fontSize:'14px' }} />
+                            </TableCell>
+                            <TableCell>
+                                <TextField size="small" value="20" sx={{ color: 'black', fontSize:'14px' }} />
+                            </TableCell>
+                            <TableCell>
+                                <Typography sx={{ color: '#FFCC01', fontSize: '14px' }}>#NG</Typography>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+            </Table>
+        </TableContainer>
+        
+        {/* Verification */}
+        <Box sx={{ mt: 2 }}>
+            <Typography variant="verifikasi">Verifikasi:</Typography>
+            <TextField fullWidth multiline rows={3} />
+        </Box>
+
+       {/* Status */}
+       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant="body1" sx={{ padding: '5px 8px' }}>Status:</Typography>
+            <Typography
+              variant="body1"
+                sx={{
+                  padding: '5px 8px',
+                  backgroundColor: selectedReport?.status === 'Rejected' 
+                  ? '#FF1707' 
+                  : selectedReport?.status === 'Pending' 
+                  ? '#FFCC01' 
+                  : selectedReport?.status === 'Approved' 
+                  ? '#4BCE97' 
+                  : '', 
+                  color: 'white',
+                  borderRadius: '4px',
+                  textAlign: 'center',
+                  minWidth: '100px',
+              }}
+           >
+            {selectedReport?.status || 'Unknown'}
+          </Typography>
+      </Box>
+    </DialogContent>
+    <DialogActions>
+        <Button onClick={handleCloseDetailModal} color="secondary">Cancel</Button>
+    </DialogActions>
+</Dialog>
+</Box>
+                
     );
 };
 
