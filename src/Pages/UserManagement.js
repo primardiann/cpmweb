@@ -16,7 +16,8 @@ import {
     Divider,
     Modal,
     IconButton,
-    CircularProgress
+    CircularProgress,
+    Grid
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -99,6 +100,10 @@ function UserManagement() {
         };
         fetchData();
     }, []);
+
+    const handleCancel = () => {
+        setFormData({name: '', email: '', role: ''});
+    };
 
     const handleTambahData = () => {
         setIsEditing(false);
@@ -269,8 +274,7 @@ function UserManagement() {
                                                                     }
                                                                 }}
                                                                 startIcon={<EditIcon />
-                                                                }
-                                                            />
+}/>
                                                             <Button
                                                                 onClick={() => handleDeleteData(user.user_id)}
                                                                 variant="contained"
@@ -284,8 +288,7 @@ function UserManagement() {
                                                                     }
                                                                 }}
                                                                 startIcon={<DeleteIcon />
-                                                                }
-                                                            />
+}/>
                                                         </Box>
                                                     </StyledTableCell>
                                                 </TableRow>
@@ -311,17 +314,22 @@ function UserManagement() {
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
-                            width: 400,
+                            width: 550,
+                            height: 500,
                             bgcolor: 'background.paper',
                             boxShadow: 24,
-                            borderRadius: 2,
-                            p: 3
+                            borderRadius: 4,
+                            p: 3,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
                         }}>
                         <Typography
                             variant="h6"
                             gutterBottom="gutterBottom"
                             sx={{
-                                textAlign: 'center'
+                                textAlign: 'center',
+                                fontWeight: 'bold' // Menambahkan fontWeight untuk membuat teks menjadi tebal
                             }}>
                             {
                                 isEditing
@@ -329,6 +337,7 @@ function UserManagement() {
                                     : 'Add New User'
                             }
                         </Typography>
+
                         <IconButton
                             onClick={handleCloseModal}
                             sx={{
@@ -339,60 +348,125 @@ function UserManagement() {
                             <CloseIcon/>
                         </IconButton>
                         <form onSubmit={handleSubmit}>
-                            <TextField
-                                fullWidth="fullWidth"
-                                variant="outlined"
-                                margin="dense"
-                                label="Name"
-                                name="nama"
-                                value={formData.nama}
-                                onChange={handleChange}
-                                required="required"/>
-                            <TextField
-                                fullWidth="fullWidth"
-                                variant="outlined"
-                                margin="dense"
-                                label="Email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required="required"/>
-                            <TextField
-                                fullWidth="fullWidth"
-                                variant="outlined"
-                                margin="dense"
-                                label="Role"
-                                name="role"
-                                value={formData.role}
-                                onChange={handleChange}
-                                required="required"/>
-                            <TextField
-                                fullWidth="fullWidth"
-                                variant="outlined"
-                                margin="dense"
-                                label="Phone"
-                                name="no_hp"
-                                value={formData.no_hp}
-                                onChange={handleChange}
-                                required="required"/>
-                            <Button
-                                type="submit"
-                                fullWidth="fullWidth"
-                                variant="contained"
+                            <Grid container="container" spacing={2} alignItems="center">
+                                <Grid item="item" xs={3}>
+                                    <Box display="flex" justifyContent="flex-end">
+                                        <label htmlFor="nama">Name: </label>
+                                    </Box>
+                                </Grid>
+                                <Grid item="item" xs={9}>
+                                    <TextField
+                                        fullWidth="fullWidth"
+                                        variant="outlined"
+                                        margin="dense"
+                                        id="nama"
+                                        name="nama"
+                                        value={formData.nama}
+                                        onChange={handleChange}
+                                        required="required"
+                                        sx={{
+                                            borderRadius: 4, // Menambahkan border radius
+                                        }}/>
+                                </Grid>
+
+                                <Grid item="item" xs={3}>
+                                    <Box display="flex" justifyContent="flex-end">
+                                        <label htmlFor="email">Email: </label>
+                                    </Box>
+                                </Grid>
+                                <Grid item="item" xs={9}>
+                                    <TextField
+                                        fullWidth="fullWidth"
+                                        variant="outlined"
+                                        margin="dense"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required="required"
+                                        sx={{
+                                            borderRadius: 4, // Menambahkan border radius
+                                        }}/>
+                                </Grid>
+
+                                <Grid item="item" xs={3}>
+                                    <Box display="flex" justifyContent="flex-end">
+                                        <label htmlFor="role">Role: </label>
+                                    </Box>
+                                </Grid>
+                                <Grid item="item" xs={9}>
+                                    <TextField
+                                        fullWidth="fullWidth"
+                                        variant="outlined"
+                                        margin="dense"
+                                        id="role"
+                                        name="role"
+                                        value={formData.role}
+                                        onChange={handleChange}
+                                        required="required"
+                                        sx={{
+                                            borderRadius: 4, // Menambahkan border radius
+                                        }}/>
+                                </Grid>
+
+                                <Grid item="item" xs={3}>
+                                    <Box display="flex" justifyContent="flex-end">
+                                        <label htmlFor="no_hp">Phone: </label>
+                                    </Box>
+                                </Grid>
+                                <Grid item="item" xs={9}>
+                                    <TextField
+                                        fullWidth="fullWidth"
+                                        variant="outlined"
+                                        margin="dense"
+                                        id="no_hp"
+                                        name="no_hp"
+                                        value={formData.no_hp}
+                                        onChange={handleChange}
+                                        required="required"
+                                        sx={{
+                                            borderRadius: 4, // Menambahkan border radius
+                                        }}/>
+                                </Grid>
+                            </Grid>
+                            <Box
                                 sx={{
-                                    mt: 2,
-                                    bgcolor: '#0055A8',
-                                    color: 'white',
-                                    '&:hover' : {
-                                        bgcolor: '#004a99'
-                                    }
+                                    display: 'flex',
+                                    justifyContent: 'flex-end', // Menempatkan tombol di sebelah kanan
+                                    gap: 2, // Memberikan jarak antara tombol Submit dan Cancel
+                                    mt: 2, // Memberikan margin atas agar tombol tidak terlalu dekat dengan elemen lainnya
                                 }}>
-                                {
-                                    isEditing
-                                        ? 'Save Changes'
-                                        : 'Add User'
-                                }
-                            </Button>
+                                <Button variant="contained" onClick={handleCancel}
+                                    // Ganti dengan fungsi yang sesuai untuk menangani aksi Cancel
+                                    sx={{
+                                        bgcolor: '#7F7F7F',
+                                        color: 'white',
+                                        '&:hover' : {
+                                            bgcolor: '#7F7F7F'
+                                        },
+                                        width: '100px', // Atur ukuran tombol agar konsisten
+                                    }}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{
+                                        bgcolor: '#1977E2',
+                                        color: 'white',
+                                        '&:hover' : {
+                                            bgcolor: '#1977E2'
+                                        },
+                                        width: '100px', // Atur ukuran tombol agar konsisten
+                                    }}>
+                                    {
+                                        isEditing
+                                            ? 'Submit'
+                                            : 'Submit'
+                                    }
+                                </Button>
+                            </Box>
+
                         </form>
                     </Box>
                 </Modal>

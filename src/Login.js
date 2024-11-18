@@ -20,7 +20,7 @@ function Login() {
         e.preventDefault();
         if (username === 'Admin' && password === '123') {
             localStorage.setItem('username', username);
-            navigate('/dashboard');
+            navigate('/Dashboard');
         } else {
             setError('Invalid username or password');
         }
