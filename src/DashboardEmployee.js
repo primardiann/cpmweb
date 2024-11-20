@@ -26,8 +26,8 @@ import {
 } from '@mui/icons-material';
 import { PieChart, Pie, Cell } from 'recharts';
 import { Link, Routes, Route, useNavigate } from 'react-router-dom';
-import ChangePartManagementReportsEmployee from './Employee/cpm_reportsEmployee';
-import SettingsEmployee from './Employee/settingsEmployee';
+import ChangePartManagementReportsEmployee from './employee/cpm_reportsEmployee';
+import SettingsEmployee from './employee/settingsEmployee';
 
 const DashboardEmployee = () => {
     const [open, setOpen] = useState(true);
