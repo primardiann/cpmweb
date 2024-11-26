@@ -30,12 +30,12 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         backgroundColor: '#EEEEEE',
         color: theme.palette.common.black,
         fontWeight: 'bold',
-        fontSize: '1rem'
+        fontSize: '1rem',
     },
     [`&.MuiTableCell-body`]: {
         fontSize: 14,
-        padding: '8px'
-    }
+        padding: '8px',
+    },
 }));
 
 const LineManagement = () => {
@@ -54,7 +54,7 @@ const LineManagement = () => {
 
     const fetchLines = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/line');
+            const response = await axios.get('http://localhost:5000/api/line');
             setLines(response.data);
             setLoading(false);
         } catch (error) {
@@ -70,8 +70,8 @@ const LineManagement = () => {
     };
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
 
-    const filteredLines = lines.filter(
-        (line) => line.kode_line && line.kode_line.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredLines = lines.filter((line) =>
+        line.kode_line.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleDialogOpen = (line = null) => {
@@ -94,7 +94,7 @@ const LineManagement = () => {
         const { name, value } = event.target;
         setNewLine((prevState) => ({
             ...prevState,
-            [name]: value
+            [name]: value,
         }));
     };
 
@@ -105,7 +105,7 @@ const LineManagement = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/line', newLine);
+            const response = await axios.post('http://localhost:5000/api/line', newLine);
             alert(response.data.message);
             fetchLines();
             handleDialogClose();
@@ -122,7 +122,7 @@ const LineManagement = () => {
 
         try {
             const response = await axios.put(
-                `http://localhost:5000/line/${editingLine.line_id}`, // Menggunakan line_id
+                `http://localhost:5000/api/line/${editingLine.line_id}`,
                 newLine
             );
             alert(response.data.message);
@@ -135,7 +135,7 @@ const LineManagement = () => {
 
     const deleteLine = async (line_id) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/line/${line_id}`);
+            const response = await axios.delete(`http://localhost:5000/api/line/${line_id}`);
             alert(response.data.message);
             fetchLines();
         } catch (error) {
@@ -146,18 +146,44 @@ const LineManagement = () => {
     return (
         <Box sx={{ p: 2 }}>
             <Paper elevation={3} sx={{ borderRadius: '8px', p: 3 }}>
-                <Typography variant="h5" sx={{ mb: 1, display: 'flex', alignItems: 'center', color: '#0055A8', fontWeight: 'bold' }}>
+                <Typography
+                    variant="h5"
+                    sx={{
+                        mb: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: '#0055A8',
+                        fontWeight: 'bold',
+                    }}
+                >
                     <AlignHorizontalRightIcon sx={{ mr: 1 }} />
                     Line Management
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, alignItems: 'center' }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        mb: 2,
+                        alignItems: 'center',
+                    }}
+                >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <SearchIcon sx={{ mr: 1 }} />
-                        <TextField variant="outlined" size="small" placeholder="Search by line name" value={searchTerm} onChange={handleSearchChange} />
+                        <TextField
+                            variant="outlined"
+                            size="small"
+                            placeholder="Search by line name"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        />
                     </Box>
-                    <Button variant="contained" sx={{ bgcolor: '#005DB8', color: 'white' }} onClick={() => handleDialogOpen()}>
+                    <Button
+                        variant="contained"
+                        sx={{ bgcolor: '#005DB8', color: 'white' }}
+                        onClick={() => handleDialogOpen()}
+                    >
                         + New Line
                     </Button>
                 </Box>
@@ -175,42 +201,93 @@ const LineManagement = () => {
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={4} align="center">Loading...</TableCell>
+                                    <TableCell colSpan={4} align="center">
+                                        Loading...
+                                    </TableCell>
                                 </TableRow>
                             ) : filteredLines.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={4} align="center">No Line found</TableCell>
+                                    <TableCell colSpan={4} align="center">
+                                        No Line found
+                                    </TableCell>
                                 </TableRow>
                             ) : (
-                                filteredLines.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((line, index) => (
-                                    <TableRow key={line.line_id}> {/* Menggunakan line_id */}
-                                        <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                                        <StyledTableCell>{line.kode_line}</StyledTableCell>
-                                        <StyledTableCell>{line.lokasi}</StyledTableCell>
-                                        <StyledTableCell>
-                                            <Button variant="contained" sx={{ bgcolor: '#FF9707', color: 'white', borderRadius: '8px' }} startIcon={<EditIcon />} onClick={() => handleDialogOpen(line)} />
-                                            <Button variant="contained" sx={{ bgcolor: '#FF1707', color: 'white', borderRadius: '8px', ml: 1 }} startIcon={<DeleteIcon />} onClick={() => deleteLine(line.line_id)} />
-                                        </StyledTableCell>
-                                    </TableRow>
-                                ))
+                                filteredLines
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((line, index) => (
+                                        <TableRow key={line.line_id}>
+                                            <StyledTableCell>
+                                                {index + 1 + page * rowsPerPage}
+                                            </StyledTableCell>
+                                            <StyledTableCell>{line.kode_line}</StyledTableCell>
+                                            <StyledTableCell>{line.lokasi}</StyledTableCell>
+                                            <StyledTableCell>
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{
+                                                        bgcolor: '#FF9707',
+                                                        color: 'white',
+                                                        borderRadius: '8px',
+                                                    }}
+                                                    startIcon={<EditIcon />}
+                                                    onClick={() => handleDialogOpen(line)}
+                                                />
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{
+                                                        bgcolor: '#FF1707',
+                                                        color: 'white',
+                                                        borderRadius: '8px',
+                                                        ml: 1,
+                                                    }}
+                                                    startIcon={<DeleteIcon />}
+                                                    onClick={() => deleteLine(line.line_id)}
+                                                />
+                                            </StyledTableCell>
+                                        </TableRow>
+                                    ))
                             )}
                         </TableBody>
                     </Table>
                 </TableContainer>
 
-                <TablePagination rowsPerPageOptions={[5, 10, 25]} component="div" count={filteredLines.length} rowsPerPage={rowsPerPage} page={page} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={filteredLines.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
             </Paper>
 
             <Dialog open={openDialog} onClose={handleDialogClose}>
                 <DialogTitle>{editingLine ? 'Edit Line' : 'Add New Line'}</DialogTitle>
                 <DialogContent>
-                    <TextField label="Line Name" name="kode_line" fullWidth value={newLine.kode_line} onChange={handleInputChange} sx={{ mb: 2 }} />
-                    <TextField label="Location" name="lokasi" fullWidth value={newLine.lokasi} onChange={handleInputChange} />
+                    <TextField
+                        label="Line Name"
+                        name="kode_line"
+                        value={newLine.kode_line}
+                        onChange={handleInputChange}
+                        fullWidth
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        label="Location"
+                        name="lokasi"
+                        value={newLine.lokasi}
+                        onChange={handleInputChange}
+                        fullWidth
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose}>Cancel</Button>
-                    <Button variant="contained" sx={{ bgcolor: '#005DB8', color: 'white' }} onClick={editingLine ? updateLine : addLine}>
-                        {editingLine ? 'Update' : 'Add'}
+                    <Button
+                        onClick={editingLine ? updateLine : addLine}
+                        sx={{ bgcolor: '#0055A8', color: 'white' }}
+                    >
+                        {editingLine ? 'Save Changes' : 'Add Line'}
                     </Button>
                 </DialogActions>
             </Dialog>

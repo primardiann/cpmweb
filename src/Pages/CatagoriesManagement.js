@@ -1,5 +1,4 @@
-import {useState} from 'react';
-import {styled} from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -13,82 +12,140 @@ import {
     Paper,
     TablePagination,
     TextField,
-    Divider
+    Divider,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle
 } from '@mui/material';
-import CategoryIcon from '@mui/icons-material/Category';
+import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
+import { styled } from '@mui/material/styles';
+import axios from 'axios';
 
-const StyledTableCell = styled(TableCell)(({theme}) => ({
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.MuiTableCell-head`]: {
         backgroundColor: '#EEEEEE',
         color: theme.palette.common.black,
         fontWeight: 'bold',
-        fontSize: '1rem'
+        fontSize: '1rem',
     },
     [`&.MuiTableCell-body`]: {
         fontSize: 14,
-        padding: '8px'
-    }
+        padding: '8px',
+    },
 }));
 
 const CategoriesManagement = () => {
-    const categories = [
-        {
-            id: 1,
-            name: 'Winding',
-            location: 'Location 1'
-        }, {
-            id: 2,
-            name: 'Welding',
-            location: 'Location 2'
-        }, {
-            id: 3,
-            name: 'Core Press',
-            location: 'Location 3'
-        }, {
-            id: 4,
-            name: 'Core Pre Press',
-            location: 'Location 4'
-        }, {
-            id: 5,
-            name: 'Welding',
-            location: 'Location 5'
-        }
-    ];
-
+    const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [newCategory, setNewCategory] = useState({ nama_kategori: '' });
+    const [editingCategory, setEditingCategory] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/kategori');
+            setCategories(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            setLoading(false);
+        }
     };
 
+    const handleChangePage = (event, newPage) => setPage(newPage);
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+    const handleSearchChange = (event) => setSearchTerm(event.target.value);
 
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
-    };
-
-    const filteredCategories = categories.filter(
-        category => category.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredCategories = categories.filter((category) =>
+        category.nama_kategori.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleDialogOpen = (category = null) => {
+        if (category) {
+            setEditingCategory(category);
+            setNewCategory({ nama_kategori: category.nama_kategori });
+        } else {
+            setEditingCategory(null);
+            setNewCategory({ nama_kategori: '' });
+        }
+        setOpenDialog(true);
+    };
+
+    const handleDialogClose = () => {
+        setOpenDialog(false);
+        setEditingCategory(null);
+    };
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setNewCategory((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const addCategory = async () => {
+        if (!newCategory.nama_kategori) {
+            alert('Category name is required!');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/kategori', newCategory);
+            alert('Category added successfully');
+            fetchCategories();
+            handleDialogClose();
+        } catch (error) {
+            console.error('Error adding category:', error);
+        }
+    };
+
+    const updateCategory = async () => {
+        if (!newCategory.nama_kategori) {
+            alert('Category name is required!');
+            return;
+        }
+
+        try {
+            const response = await axios.put(
+                `http://localhost:5000/api/kategori/${editingCategory.kategori_id}`,
+                newCategory
+            );
+            alert('Category updated successfully');
+            fetchCategories();
+            handleDialogClose();
+        } catch (error) {
+            console.error('Error updating category:', error);
+        }
+    };
+
+    const deleteCategory = async (kategori_id) => {
+        try {
+            const response = await axios.delete(`http://localhost:5000/api/kategori/${kategori_id}`);
+            alert('Category deleted successfully');
+            fetchCategories();
+        } catch (error) {
+            console.error('Error deleting category:', error);
+        }
+    };
+
     return (
-        <Box sx={{
-                p: 2
-            }}>
-            <Paper
-                elevation={3}
-                sx={{
-                    borderRadius: '8px',
-                    p: 3
-                }}>
+        <Box sx={{ p: 2 }}>
+            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3 }}>
                 <Typography
                     variant="h5"
                     sx={{
@@ -96,126 +153,98 @@ const CategoriesManagement = () => {
                         display: 'flex',
                         alignItems: 'center',
                         color: '#0055A8',
-                        fontWeight: 'bold'
-                    }}>
-                    <CategoryIcon
-                        sx={{
-                            mr: 1
-                        }}/>
+                        fontWeight: 'bold',
+                    }}
+                >
+                    <AlignHorizontalRightIcon sx={{ mr: 1 }} />
                     Categories Management
                 </Typography>
-                <Divider sx={{
-                        mb: 2
-                    }}/>
+                <Divider sx={{ mb: 2 }} />
 
                 <Box
                     sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         mb: 2,
-                        alignItems: 'center'
-                    }}>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center'
-                        }}>
-                        <SearchIcon
-                            sx={{
-                                mr: 1
-                            }}/>
+                        alignItems: 'center',
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <SearchIcon sx={{ mr: 1 }} />
                         <TextField
                             variant="outlined"
                             size="small"
                             placeholder="Search by category name"
                             value={searchTerm}
-                            onChange={handleSearchChange}/>
+                            onChange={handleSearchChange}
+                        />
                     </Box>
-
                     <Button
                         variant="contained"
-                        sx={{
-                            bgcolor: '#005DB8',
-                            color: 'white'
-                        }}>
+                        sx={{ bgcolor: '#005DB8', color: 'white' }}
+                        onClick={() => handleDialogOpen()}
+                    >
                         + New Category
                     </Button>
                 </Box>
 
-                <TableContainer
-                    component={Paper}
-                    sx={{
-                        borderRadius: '8px'
-                    }}>
+                <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
                     <Table>
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
                                 <StyledTableCell>Category Name</StyledTableCell>
-                                <StyledTableCell>Location</StyledTableCell>
                                 <StyledTableCell>Action</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {
-                                filteredCategories.length > 0
-                                    ? filteredCategories
-                                        .slice(
-                                            page * rowsPerPage,
-                                            page * rowsPerPage + rowsPerPage
-                                        )
-                                        .map((category, index) => (
-                                            <TableRow key={category.id}>
-                                                <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                                                <StyledTableCell>{category.name}</StyledTableCell>
-                                                <StyledTableCell>{category.location}</StyledTableCell>
-                                                <StyledTableCell>
-                                                    <Box
-                                                        sx={{
-                                                            display: 'flex',
-                                                            justifyContent: 'flex-start'
-                                                        }}>
-                                                        <Button
-                                                            variant="contained"
-                                                            sx={{
-                                                                bgcolor: '#FF9707',
-                                                                color: 'white',
-                                                                borderRadius: '8px',
-                                                                '&:hover' : {
-                                                                    bgcolor: '#FFA500'
-                                                                }
-                                                            }}
-                                                            startIcon={<EditIcon />
-}/>
-                                                        <Button
-                                                            variant="contained"
-                                                            sx={{
-                                                                bgcolor: '#FF1707',
-                                                                color: 'white',
-                                                                borderRadius: '8px',
-                                                                ml: 1,
-                                                                '&:hover' : {
-                                                                    bgcolor: '#FF4500'
-                                                                }
-                                                            }}
-                                                            startIcon={<DeleteIcon />
-}/>
-                                                    </Box>
-                                                </StyledTableCell>
-                                            </TableRow>
-                                        ))
-                                    : <TableRow>
-                                            <StyledTableCell colSpan={4} align="center">
-                                                <Typography
-                                                    variant="body1"
+                            {loading ? (
+                                <TableRow>
+                                    <TableCell colSpan={3} align="center">
+                                        Loading...
+                                    </TableCell>
+                                </TableRow>
+                            ) : filteredCategories.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={3} align="center">
+                                        No Categories found
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                filteredCategories
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((category, index) => (
+                                        <TableRow key={category.kategori_id}>
+                                            <StyledTableCell>
+                                                {index + 1 + page * rowsPerPage}
+                                            </StyledTableCell>
+                                            <StyledTableCell>{category.nama_kategori}</StyledTableCell>
+                                            <StyledTableCell>
+                                                <Button
+                                                    variant="contained"
                                                     sx={{
-                                                        color: '#888'
-                                                    }}>
-                                                    No categories found.
-                                                </Typography>
+                                                        bgcolor: '#FF9707',
+                                                        color: 'white',
+                                                        borderRadius: '8px',
+                                                    }}
+                                                    startIcon={<EditIcon />}
+                                                    onClick={() => handleDialogOpen(category)}
+                                                />
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{
+                                                        bgcolor: '#FF1707',
+                                                        color: 'white',
+                                                        borderRadius: '8px',
+                                                        ml: 1,
+                                                    }}
+                                                    startIcon={<DeleteIcon />}
+                                                    onClick={() => deleteCategory(category.kategori_id)}
+                                                />
                                             </StyledTableCell>
                                         </TableRow>
-                            }
+                                    ))
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -227,8 +256,32 @@ const CategoriesManagement = () => {
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}/>
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
             </Paper>
+
+            <Dialog open={openDialog} onClose={handleDialogClose}>
+                <DialogTitle>{editingCategory ? 'Edit Category' : 'Add New Category'}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Category Name"
+                        name="nama_kategori"
+                        value={newCategory.nama_kategori}
+                        onChange={handleInputChange}
+                        fullWidth
+                        sx={{ mb: 2 }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>Cancel</Button>
+                    <Button
+                        onClick={editingCategory ? updateCategory : addCategory}
+                        sx={{ bgcolor: '#0055A8', color: 'white' }}
+                    >
+                        {editingCategory ? 'Save Changes' : 'Add Category'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

@@ -1,5 +1,4 @@
-import {useState} from 'react';
-import {styled} from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -13,88 +12,140 @@ import {
     Paper,
     TablePagination,
     TextField,
-    Divider
+    Divider,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle
 } from '@mui/material';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
+import { styled } from '@mui/material/styles';
+import axios from 'axios';
 
-const StyledTableCell = styled(TableCell)(({theme}) => ({
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.MuiTableCell-head`]: {
         backgroundColor: '#EEEEEE',
         color: theme.palette.common.black,
         fontWeight: 'bold',
-        fontSize: '1rem'
+        fontSize: '1rem',
     },
     [`&.MuiTableCell-body`]: {
         fontSize: 14,
-        padding: '8px'
-    }
+        padding: '8px',
+    },
 }));
 
 const PartSpecification = () => {
-    const specifications = [
-        {
-            id: 1,
-            category: 'Winding',
-            name: 'SHAFT',
-            model: '#LP51UP'
-        }, {
-            id: 2,
-            category: 'Winding',
-            name: 'TAIL STOCK',
-            model: '#LP51SP'
-        }, {
-            id: 3,
-            category: 'Winding',
-            name: 'COIL HOLDER',
-            model: '#LP51UD'
-        }, {
-            id: 4,
-            category: 'Welding',
-            name: 'COIL RETAINER',
-            model: '#L5EU ( L, R )'
-        }, {
-            id: 5,
-            category: 'Welding',
-            name: 'LEAD CUTTING',
-            model: '#L5E5 ( L, R )'
-        }
-
-    ];
-
+    const [specifications, setSpecifications] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [newSpecification, setNewSpecification] = useState({ kategori_id: '', nama_spesifikasi: '', nilai_standar: '' });
+    const [editingSpecification, setEditingSpecification] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
+    useEffect(() => {
+        fetchSpecifications();
+    }, []);
+
+    const fetchSpecifications = async () => {
+        try {
+            const { data } = await axios.get('http://localhost:5000/api/spesifikasi');
+            setSpecifications(data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching specifications:', error);
+            setLoading(false);
+        }
     };
 
+    const handleChangePage = (event, newPage) => setPage(newPage);
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+    const handleSearchChange = (event) => setSearchTerm(event.target.value);
 
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
-    };
-
-    const filteredSpecifications = specifications.filter(
-        spec => spec.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredSpecifications = specifications.filter((specification) =>
+        specification.nama_spesifikasi.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleDialogOpen = (specification = null) => {
+        if (specification) {
+            setEditingSpecification(specification);
+            setNewSpecification({ kategori_id: specification.kategori_id, nama_spesifikasi: specification.nama_spesifikasi, nilai_standar: specification.nilai_standar });
+        } else {
+            setEditingSpecification(null);
+            setNewSpecification({ kategori_id: '', nama_spesifikasi: '', nilai_standar: '' });
+        }
+        setOpenDialog(true);
+    };
+
+    const handleDialogClose = () => {
+        setOpenDialog(false);
+        setEditingSpecification(null);
+    };
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setNewSpecification((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const addSpecification = async () => {
+        if (!newSpecification.kategori_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar) {
+            alert('All fields are required!');
+            return;
+        }
+
+        try {
+            await axios.post('http://localhost:5000/api/spesifikasi', newSpecification);
+            alert('Specification added successfully');
+            fetchSpecifications();
+            handleDialogClose();
+        } catch (error) {
+            console.error('Error adding specification:', error);
+        }
+    };
+
+    const updateSpecification = async () => {
+        if (!newSpecification.kategori_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar) {
+            alert('All fields are required!');
+            return;
+        }
+
+        try {
+            await axios.put(
+                `http://localhost:5000/api/spesifikasi/${editingSpecification.spesifikasi_id}`,
+                newSpecification
+            );
+            alert('Specification updated successfully');
+            fetchSpecifications();
+            handleDialogClose();
+        } catch (error) {
+            console.error('Error updating specification:', error);
+        }
+    };
+
+    const deleteSpecification = async (spesifikasi_id) => {
+        try {
+            await axios.delete(`http://localhost:5000/api/spesifikasi/${spesifikasi_id}`);
+            alert('Specification deleted successfully');
+            fetchSpecifications();
+        } catch (error) {
+            console.error('Error deleting specification:', error);
+        }
+    };
+
     return (
-        <Box sx={{
-                p: 2
-            }}>
-            <Paper
-                elevation={3}
-                sx={{
-                    borderRadius: '8px',
-                    p: 3
-                }}>
+        <Box sx={{ p: 2 }}>
+            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3 }}>
                 <Typography
                     variant="h5"
                     sx={{
@@ -102,127 +153,102 @@ const PartSpecification = () => {
                         display: 'flex',
                         alignItems: 'center',
                         color: '#0055A8',
-                        fontWeight: 'bold'
-                    }}>
-                    <AccountTreeIcon
-                        sx={{
-                            mr: 1
-                        }}/>
+                        fontWeight: 'bold',
+                    }}
+                >
+                    <AlignHorizontalRightIcon sx={{ mr: 1 }} />
                     Part Specification Management
                 </Typography>
-                <Divider sx={{
-                        mb: 2
-                    }}/>
+                <Divider sx={{ mb: 2 }} />
 
                 <Box
                     sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         mb: 2,
-                        alignItems: 'center'
-                    }}>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center'
-                        }}>
-                        <SearchIcon
-                            sx={{
-                                mr: 1
-                            }}/>
+                        alignItems: 'center',
+                    }}
+                >
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <SearchIcon sx={{ mr: 1 }} />
                         <TextField
                             variant="outlined"
                             size="small"
                             placeholder="Search by specification name"
                             value={searchTerm}
-                            onChange={handleSearchChange}/>
+                            onChange={handleSearchChange}
+                        />
                     </Box>
-
                     <Button
                         variant="contained"
-                        sx={{
-                            bgcolor: '#005DB8',
-                            color: 'white'
-                        }}>
-                        + New Part Specification
+                        sx={{ bgcolor: '#005DB8', color: 'white' }}
+                        onClick={() => handleDialogOpen()}
+                    >
+                        + New Specification
                     </Button>
                 </Box>
 
-                <TableContainer
-                    component={Paper}
-                    sx={{
-                        borderRadius: '8px'
-                    }}>
+                <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
                     <Table>
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
-                                <StyledTableCell>Category</StyledTableCell>
                                 <StyledTableCell>Specification Name</StyledTableCell>
-                                <StyledTableCell>Model Running</StyledTableCell>
+                                <StyledTableCell>Category</StyledTableCell>
+                                <StyledTableCell>Standard Value</StyledTableCell>
                                 <StyledTableCell>Action</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {
-                                filteredSpecifications.length > 0
-                                    ? (
-                                        filteredSpecifications.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((spec, index) => (
-                                            <TableRow key={spec.id}>
-                                                <StyledTableCell>{index + 1 + page * rowsPerPage}</StyledTableCell>
-                                                <StyledTableCell>{spec.category}</StyledTableCell>
-                                                <StyledTableCell>{spec.name}</StyledTableCell>
-                                                <StyledTableCell>{spec.model}</StyledTableCell>
-                                                <StyledTableCell>
-                                                    <Box
-                                                        sx={{
-                                                            display: 'flex',
-                                                            justifyContent: 'flex-start'
-                                                        }}>
-                                                        <Button
-                                                            variant="contained"
-                                                            sx={{
-                                                                bgcolor: '#FF9707',
-                                                                color: 'white',
-                                                                borderRadius: '8px',
-                                                                '&:hover' : {
-                                                                    bgcolor: '#FFA500'
-                                                                }
-                                                            }}
-                                                            startIcon={<EditIcon />
-}/>
-                                                        <Button
-                                                            variant="contained"
-                                                            sx={{
-                                                                bgcolor: '#FF1707',
-                                                                color: 'white',
-                                                                borderRadius: '8px',
-                                                                ml: 1,
-                                                                '&:hover' : {
-                                                                    bgcolor: '#FF4500'
-                                                                }
-                                                            }}
-                                                            startIcon={<DeleteIcon />
-}/>
-                                                    </Box>
-                                                </StyledTableCell>
-                                            </TableRow>
-                                        ))
-                                    )
-                                    : (
-                                        <TableRow>
-                                            <StyledTableCell colSpan={5} align="center">
-                                                <Typography
-                                                    variant="body1"
+                            {loading ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        Loading...
+                                    </TableCell>
+                                </TableRow>
+                            ) : filteredSpecifications.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        No Specifications found
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                filteredSpecifications
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((specification, index) => (
+                                        <TableRow key={specification.spesifikasi_id}>
+                                            <StyledTableCell>
+                                                {index + 1 + page * rowsPerPage}
+                                            </StyledTableCell>
+                                            <StyledTableCell>{specification.nama_spesifikasi}</StyledTableCell>
+                                            <StyledTableCell>{specification.kategori_id}</StyledTableCell>
+                                            <StyledTableCell>{specification.nilai_standar}</StyledTableCell>
+                                            <StyledTableCell>
+                                                <Button
+                                                    variant="contained"
                                                     sx={{
-                                                        color: '#888'
-                                                    }}>
-                                                    No specifications found.
-                                                </Typography>
+                                                        bgcolor: '#FF9707',
+                                                        color: 'white',
+                                                        borderRadius: '8px',
+                                                    }}
+                                                    startIcon={<EditIcon />}
+                                                    onClick={() => handleDialogOpen(specification)}
+                                                />
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{
+                                                        bgcolor: '#FF1707',
+                                                        color: 'white',
+                                                        borderRadius: '8px',
+                                                        ml: 1,
+                                                    }}
+                                                    startIcon={<DeleteIcon />}
+                                                    onClick={() => deleteSpecification(specification.spesifikasi_id)}
+                                                />
                                             </StyledTableCell>
                                         </TableRow>
-                                    )
-                            }
+                                    ))
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -234,8 +260,49 @@ const PartSpecification = () => {
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}/>
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
             </Paper>
+
+            <Dialog open={openDialog} onClose={handleDialogClose}>
+                <DialogTitle>{editingSpecification ? 'Edit Specification' : 'Add New Specification'}</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Specification Name"
+                        name="nama_spesifikasi"
+                        value={newSpecification.nama_spesifikasi}
+                        onChange={handleInputChange}
+                        fullWidth
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        label="Category ID"
+                        name="kategori_id"
+                        value={newSpecification.kategori_id}
+                        onChange={handleInputChange}
+                        fullWidth
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        label="Standard Value"
+                        name="nilai_standar"
+                        value={newSpecification.nilai_standar}
+                        onChange={handleInputChange}
+                        fullWidth
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="secondary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={editingSpecification ? updateSpecification : addSpecification}
+                        color="primary"
+                    >
+                        {editingSpecification ? 'Update' : 'Add'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };
