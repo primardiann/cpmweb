@@ -50,7 +50,7 @@ const MachineManagement = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
-    const [newMachine, setNewMachine] = useState({ nama_mesin: '', kode_mesin: '', line_id: '', kategori_id: '' });
+    const [newMachine, setNewMachine] = useState({ nama_mesin: '', kode_mesin: '', kode_line: '', nama_kategori: '' });
     const [editingMachine, setEditingMachine] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -62,10 +62,9 @@ const MachineManagement = () => {
 
     const fetchMachines = async () => {
         try {
-            await axios.get('http://localhost:5000/api/mesin').then(response => {
-                setMachines(response.data);
-                setLoading(false);
-            });
+            const response = await axios.get('http://localhost:5000/api/mesin');
+            setMachines(response.data);
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching machines:', error);
             setLoading(false);
@@ -74,9 +73,8 @@ const MachineManagement = () => {
 
     const fetchLines = async () => {
         try {
-            await axios.get('http://localhost:5000/api/line').then(response => {
-                setLines(response.data);
-            });
+            const response = await axios.get('http://localhost:5000/api/line');
+            setLines(response.data);
         } catch (error) {
             console.error('Error fetching lines:', error);
         }
@@ -84,9 +82,8 @@ const MachineManagement = () => {
 
     const fetchCategories = async () => {
         try {
-            await axios.get('http://localhost:5000/api/kategori').then(response => {
-                setCategories(response.data);
-            });
+            const response = await axios.get('http://localhost:5000/api/kategori');
+            setCategories(response.data);
         } catch (error) {
             console.error('Error fetching categories:', error);
         }
@@ -106,10 +103,10 @@ const MachineManagement = () => {
     const handleDialogOpen = (machine = null) => {
         if (machine) {
             setEditingMachine(machine);
-            setNewMachine({ nama_mesin: machine.nama_mesin, kode_mesin: machine.kode_mesin, line_id: machine.line_id, kategori_id: machine.kategori_id });
+            setNewMachine({ nama_mesin: machine.nama_mesin, kode_mesin: machine.kode_mesin, kode_line: machine.kode_line, nama_kategori: machine.nama_kategori });
         } else {
             setEditingMachine(null);
-            setNewMachine({ nama_mesin: '', kode_mesin: '', line_id: '', kategori_id: '' });
+            setNewMachine({ nama_mesin: '', kode_mesin: '', kode_line: '', nama_kategori: '' });
         }
         setOpenDialog(true);
     };
@@ -128,7 +125,7 @@ const MachineManagement = () => {
     };
 
     const addMachine = async () => {
-        if (!newMachine.nama_mesin || !newMachine.kode_mesin || !newMachine.line_id || !newMachine.kategori_id) {
+        if (!newMachine.nama_mesin || !newMachine.kode_mesin || !newMachine.kode_line || !newMachine.nama_kategori) {
             alert('All fields are required!');
             return;
         }
@@ -140,11 +137,12 @@ const MachineManagement = () => {
             handleDialogClose();
         } catch (error) {
             console.error('Error adding machine:', error);
+            alert('Failed to add machine');
         }
     };
 
     const updateMachine = async () => {
-        if (!newMachine.nama_mesin || !newMachine.kode_mesin || !newMachine.line_id || !newMachine.kategori_id) {
+        if (!newMachine.nama_mesin || !newMachine.kode_mesin || !newMachine.kode_line || !newMachine.nama_kategori) {
             alert('All fields are required!');
             return;
         }
@@ -156,6 +154,7 @@ const MachineManagement = () => {
             handleDialogClose();
         } catch (error) {
             console.error('Error updating machine:', error);
+            alert('Failed to update machine');
         }
     };
 
@@ -166,7 +165,12 @@ const MachineManagement = () => {
             fetchMachines();
         } catch (error) {
             console.error('Error deleting machine:', error);
+            alert('Failed to delete machine');
         }
+    };
+
+    const isFormValid = () => {
+        return newMachine.nama_mesin && newMachine.kode_mesin && newMachine.kode_line && newMachine.nama_kategori;
     };
 
     return (
@@ -244,9 +248,7 @@ const MachineManagement = () => {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((machine, index) => (
                                         <TableRow key={machine.mesin_id}>
-                                            <StyledTableCell>
-                                                {index + 1 + page * rowsPerPage}
-                                            </StyledTableCell>
+                                            <StyledTableCell>{index + 1}</StyledTableCell>
                                             <StyledTableCell>{machine.nama_mesin}</StyledTableCell>
                                             <StyledTableCell>{machine.kode_mesin}</StyledTableCell>
                                             <StyledTableCell>{machine.kode_line}</StyledTableCell>
@@ -254,24 +256,18 @@ const MachineManagement = () => {
                                             <StyledTableCell>
                                                 <Button
                                                     variant="contained"
-                                                    sx={{
-                                                        bgcolor: '#FFD700',
-                                                        color: 'white',
-                                                        mr: 1,
-                                                    }}
                                                     onClick={() => handleDialogOpen(machine)}
+                                                    startIcon={<EditIcon />}
                                                 >
-                                                    <EditIcon />
+                                                    Edit
                                                 </Button>
                                                 <Button
                                                     variant="contained"
-                                                    sx={{
-                                                        bgcolor: '#FF0000',
-                                                        color: 'white',
-                                                    }}
+                                                    sx={{ bgcolor: '#FF0000', color: 'white' }}
                                                     onClick={() => deleteMachine(machine.mesin_id)}
+                                                    startIcon={<DeleteIcon />}
                                                 >
-                                                    <DeleteIcon />
+                                                    Delete
                                                 </Button>
                                             </StyledTableCell>
                                         </TableRow>
@@ -285,9 +281,9 @@ const MachineManagement = () => {
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={filteredMachines.length}
-                    rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
@@ -295,62 +291,51 @@ const MachineManagement = () => {
             <Dialog open={openDialog} onClose={handleDialogClose}>
                 <DialogTitle>{editingMachine ? 'Edit Machine' : 'Add Machine'}</DialogTitle>
                 <DialogContent>
-    <TextField
-        fullWidth
-        label="Machine Name"
-        name="nama_mesin"
-        id="nama_mesin"  // Add id for better form association
-        variant="outlined"
-        value={newMachine.nama_mesin}
-        onChange={handleInputChange}
-        sx={{ mb: 2 }}
-    />
-    <TextField
-        fullWidth
-        label="Machine Code"
-        name="kode_mesin"
-        id="kode_mesin"  // Add id for better form association
-        variant="outlined"
-        value={newMachine.kode_mesin}
-        onChange={handleInputChange}
-        sx={{ mb: 2 }}
-    />
-    <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-        <InputLabel id="line_id_label">Line</InputLabel>  {/* Add id for label association */}
-        <Select
-            label="Line"
-            name="line_id"
-            id="line_id"  // Add id for better form association
-            value={newMachine.line_id}
-            onChange={handleInputChange}
-            labelId="line_id_label"  // Link the label to the select
-        >
-            {lines.map((line) => (
-                <MenuItem key={line.id} value={line.id}>
-                    {line.kode_line}
-                </MenuItem>
-            ))}
-        </Select>
-    </FormControl>
-    <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-        <InputLabel id="kategori_id_label">Category</InputLabel>  {/* Add id for label association */}
-        <Select
-            label="Category"
-            name="kategori_id"
-            id="kategori_id"  // Add id for better form association
-            value={newMachine.kategori_id}
-            onChange={handleInputChange}
-            labelId="kategori_id_label"  // Link the label to the select
-        >
-            {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                    {category.nama_kategori}
-                </MenuItem>
-            ))}
-        </Select>
-    </FormControl>
-</DialogContent>
-
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Machine Name"
+                        name="nama_mesin"
+                        value={newMachine.nama_mesin}
+                        onChange={handleInputChange}
+                    />
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Machine Code"
+                        name="kode_mesin"
+                        value={newMachine.kode_mesin}
+                        onChange={handleInputChange}
+                    />
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel>Line</InputLabel>
+                        <Select
+                            name="kode_line"
+                            value={newMachine.kode_line}
+                            onChange={handleInputChange}
+                        >
+                            {lines.map((line) => (
+                                <MenuItem key={line.id} value={line.kode_line}>
+                                    {line.kode_line}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel>Category</InputLabel>
+                        <Select
+                            name="nama_kategori"
+                            value={newMachine.nama_kategori}
+                            onChange={handleInputChange}
+                        >
+                            {categories.map((category) => (
+                                <MenuItem key={category.id} value={category.nama_kategori}>
+                                    {category.nama_kategori}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="primary">
                         Cancel
@@ -358,6 +343,7 @@ const MachineManagement = () => {
                     <Button
                         onClick={editingMachine ? updateMachine : addMachine}
                         color="primary"
+                        disabled={!isFormValid()}
                     >
                         {editingMachine ? 'Update' : 'Add'}
                     </Button>
