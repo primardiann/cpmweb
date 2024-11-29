@@ -16,7 +16,11 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle
+    DialogTitle,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel
 } from '@mui/material';
 import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
 import EditIcon from '@mui/icons-material/Edit';
@@ -40,6 +44,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const MachineManagement = () => {
     const [machines, setMachines] = useState([]);
+    const [lines, setLines] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState('');
@@ -50,16 +56,39 @@ const MachineManagement = () => {
 
     useEffect(() => {
         fetchMachines();
+        fetchLines();
+        fetchCategories();
     }, []);
 
     const fetchMachines = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/mesin');
-            setMachines(response.data);
-            setLoading(false);
+            await axios.get('http://localhost:5000/api/mesin').then(response => {
+                setMachines(response.data);
+                setLoading(false);
+            });
         } catch (error) {
             console.error('Error fetching machines:', error);
             setLoading(false);
+        }
+    };
+
+    const fetchLines = async () => {
+        try {
+            await axios.get('http://localhost:5000/api/line').then(response => {
+                setLines(response.data);
+            });
+        } catch (error) {
+            console.error('Error fetching lines:', error);
+        }
+    };
+
+    const fetchCategories = async () => {
+        try {
+            await axios.get('http://localhost:5000/api/kategori').then(response => {
+                setCategories(response.data);
+            });
+        } catch (error) {
+            console.error('Error fetching categories:', error);
         }
     };
 
@@ -105,7 +134,7 @@ const MachineManagement = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/mesin', newMachine);
+            await axios.post('http://localhost:5000/api/mesin', newMachine);
             alert('Machine added successfully');
             fetchMachines();
             handleDialogClose();
@@ -121,10 +150,7 @@ const MachineManagement = () => {
         }
 
         try {
-            const response = await axios.put(
-                `http://localhost:5000/api/mesin/${editingMachine.mesin_id}`,
-                newMachine
-            );
+            await axios.put(`http://localhost:5000/api/mesin/${editingMachine.mesin_id}`, newMachine);
             alert('Machine updated successfully');
             fetchMachines();
             handleDialogClose();
@@ -135,7 +161,7 @@ const MachineManagement = () => {
 
     const deleteMachine = async (mesin_id) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/mesin/${mesin_id}`);
+            await axios.delete(`http://localhost:5000/api/mesin/${mesin_id}`);
             alert('Machine deleted successfully');
             fetchMachines();
         } catch (error) {
@@ -229,24 +255,24 @@ const MachineManagement = () => {
                                                 <Button
                                                     variant="contained"
                                                     sx={{
-                                                        bgcolor: '#FF9707',
+                                                        bgcolor: '#FFD700',
                                                         color: 'white',
-                                                        borderRadius: '8px',
+                                                        mr: 1,
                                                     }}
-                                                    startIcon={<EditIcon />}
                                                     onClick={() => handleDialogOpen(machine)}
-                                                />
+                                                >
+                                                    <EditIcon />
+                                                </Button>
                                                 <Button
                                                     variant="contained"
                                                     sx={{
-                                                        bgcolor: '#FF1707',
+                                                        bgcolor: '#FF0000',
                                                         color: 'white',
-                                                        borderRadius: '8px',
-                                                        ml: 1,
                                                     }}
-                                                    startIcon={<DeleteIcon />}
                                                     onClick={() => deleteMachine(machine.mesin_id)}
-                                                />
+                                                >
+                                                    <DeleteIcon />
+                                                </Button>
                                             </StyledTableCell>
                                         </TableRow>
                                     ))
@@ -267,46 +293,72 @@ const MachineManagement = () => {
             </Paper>
 
             <Dialog open={openDialog} onClose={handleDialogClose}>
-                <DialogTitle>{editingMachine ? 'Edit Machine' : 'Add New Machine'}</DialogTitle>
+                <DialogTitle>{editingMachine ? 'Edit Machine' : 'Add Machine'}</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        label="Machine Name"
-                        name="nama_mesin"
-                        value={newMachine.nama_mesin}
-                        onChange={handleInputChange}
-                        fullWidth
-                        sx={{ mb: 2 }}
-                    />
-                    <TextField
-                        label="Machine Code"
-                        name="kode_mesin"
-                        value={newMachine.kode_mesin}
-                        onChange={handleInputChange}
-                        fullWidth
-                        sx={{ mb: 2 }}
-                    />
-                    <TextField
-                        label="Line ID"
-                        name="line_id"
-                        value={newMachine.line_id}
-                        onChange={handleInputChange}
-                        fullWidth
-                        sx={{ mb: 2 }}
-                    />
-                    <TextField
-                        label="Category ID"
-                        name="kategori_id"
-                        value={newMachine.kategori_id}
-                        onChange={handleInputChange}
-                        fullWidth
-                        sx={{ mb: 2 }}
-                    />
-                </DialogContent>
+    <TextField
+        fullWidth
+        label="Machine Name"
+        name="nama_mesin"
+        id="nama_mesin"  // Add id for better form association
+        variant="outlined"
+        value={newMachine.nama_mesin}
+        onChange={handleInputChange}
+        sx={{ mb: 2 }}
+    />
+    <TextField
+        fullWidth
+        label="Machine Code"
+        name="kode_mesin"
+        id="kode_mesin"  // Add id for better form association
+        variant="outlined"
+        value={newMachine.kode_mesin}
+        onChange={handleInputChange}
+        sx={{ mb: 2 }}
+    />
+    <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+        <InputLabel id="line_id_label">Line</InputLabel>  {/* Add id for label association */}
+        <Select
+            label="Line"
+            name="line_id"
+            id="line_id"  // Add id for better form association
+            value={newMachine.line_id}
+            onChange={handleInputChange}
+            labelId="line_id_label"  // Link the label to the select
+        >
+            {lines.map((line) => (
+                <MenuItem key={line.id} value={line.id}>
+                    {line.kode_line}
+                </MenuItem>
+            ))}
+        </Select>
+    </FormControl>
+    <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+        <InputLabel id="kategori_id_label">Category</InputLabel>  {/* Add id for label association */}
+        <Select
+            label="Category"
+            name="kategori_id"
+            id="kategori_id"  // Add id for better form association
+            value={newMachine.kategori_id}
+            onChange={handleInputChange}
+            labelId="kategori_id_label"  // Link the label to the select
+        >
+            {categories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                    {category.nama_kategori}
+                </MenuItem>
+            ))}
+        </Select>
+    </FormControl>
+</DialogContent>
+
                 <DialogActions>
-                    <Button onClick={handleDialogClose} color="secondary">
+                    <Button onClick={handleDialogClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={editingMachine ? updateMachine : addMachine} color="primary">
+                    <Button
+                        onClick={editingMachine ? updateMachine : addMachine}
+                        color="primary"
+                    >
                         {editingMachine ? 'Update' : 'Add'}
                     </Button>
                 </DialogActions>
