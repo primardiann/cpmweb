@@ -30,18 +30,18 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         backgroundColor: '#EEEEEE',
         color: theme.palette.common.black,
         fontWeight: 'bold',
-        fontSize: '1rem',
+        fontSize: '1rem'
     },
     [`&.MuiTableCell-body`]: {
         fontSize: 14,
-        padding: '8px',
-    },
+        padding: '8px'
+    }
 }));
 
 const CategoriesManagement = () => {
     const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(6);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [newCategory, setNewCategory] = useState({ nama_kategori: '' });
@@ -70,8 +70,8 @@ const CategoriesManagement = () => {
     };
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
 
-    const filteredCategories = categories.filter((category) =>
-        category.nama_kategori.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredCategories = categories.filter(
+        (category) => category.nama_kategori.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const handleDialogOpen = (category = null) => {
@@ -94,7 +94,7 @@ const CategoriesManagement = () => {
         const { name, value } = event.target;
         setNewCategory((prevState) => ({
             ...prevState,
-            [name]: value,
+            [name]: value
         }));
     };
 
@@ -105,7 +105,10 @@ const CategoriesManagement = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/kategori', newCategory);
+            await axios.post(
+                'http://localhost:5000/api/kategori',
+                newCategory
+            );
             alert('Category added successfully');
             fetchCategories();
             handleDialogClose();
@@ -121,7 +124,7 @@ const CategoriesManagement = () => {
         }
 
         try {
-            const response = await axios.put(
+            await axios.put(
                 `http://localhost:5000/api/kategori/${editingCategory.kategori_id}`,
                 newCategory
             );
@@ -135,7 +138,9 @@ const CategoriesManagement = () => {
 
     const deleteCategory = async (kategori_id) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/kategori/${kategori_id}`);
+            await axios.delete(
+                `http://localhost:5000/api/kategori/${kategori_id}`
+            );
             alert('Category deleted successfully');
             fetchCategories();
         } catch (error) {
@@ -153,7 +158,7 @@ const CategoriesManagement = () => {
                         display: 'flex',
                         alignItems: 'center',
                         color: '#0055A8',
-                        fontWeight: 'bold',
+                        fontWeight: 'bold'
                     }}
                 >
                     <AlignHorizontalRightIcon sx={{ mr: 1 }} />
@@ -161,14 +166,7 @@ const CategoriesManagement = () => {
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        mb: 2,
-                        alignItems: 'center',
-                    }}
-                >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <SearchIcon sx={{ mr: 1 }} />
                         <TextField
@@ -181,7 +179,15 @@ const CategoriesManagement = () => {
                     </Box>
                     <Button
                         variant="contained"
-                        sx={{ bgcolor: '#005DB8', color: 'white' }}
+                        sx={{
+                            bgcolor: '#005DB8',
+                            color: 'white',
+                            
+                            padding: '6px 12px',
+                            fontSize: '14px',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
                         onClick={() => handleDialogOpen()}
                     >
                         + New Category
@@ -211,39 +217,37 @@ const CategoriesManagement = () => {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                filteredCategories
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((category, index) => (
-                                        <TableRow key={category.kategori_id}>
-                                            <StyledTableCell>
-                                                {index + 1 + page * rowsPerPage}
-                                            </StyledTableCell>
-                                            <StyledTableCell>{category.nama_kategori}</StyledTableCell>
-                                            <StyledTableCell>
-                                                <Button
-                                                    variant="contained"
-                                                    sx={{
-                                                        bgcolor: '#FF9707',
-                                                        color: 'white',
-                                                        borderRadius: '8px',
-                                                    }}
-                                                    startIcon={<EditIcon />}
-                                                    onClick={() => handleDialogOpen(category)}
-                                                />
-                                                <Button
-                                                    variant="contained"
-                                                    sx={{
-                                                        bgcolor: '#FF1707',
-                                                        color: 'white',
-                                                        borderRadius: '8px',
-                                                        ml: 1,
-                                                    }}
-                                                    startIcon={<DeleteIcon />}
-                                                    onClick={() => deleteCategory(category.kategori_id)}
-                                                />
-                                            </StyledTableCell>
-                                        </TableRow>
-                                    ))
+                                filteredCategories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((category, index) => (
+                                    <TableRow key={category.kategori_id}>
+                                        <StyledTableCell>
+                                            {index + 1 + page * rowsPerPage}
+                                        </StyledTableCell>
+                                        <StyledTableCell>{category.nama_kategori}</StyledTableCell>
+                                        <StyledTableCell>
+                                            <Button
+                                                variant="contained"
+                                                sx={{
+                                                    bgcolor: '#FF9707',
+                                                    color: 'white',
+                                                    borderRadius: '8px'
+                                                }}
+                                                startIcon={<EditIcon />}
+                                                onClick={() => handleDialogOpen(category)}
+                                            />
+                                            <Button
+                                                variant="contained"
+                                                sx={{
+                                                    bgcolor: '#FF1707',
+                                                    color: 'white',
+                                                    borderRadius: '8px',
+                                                    ml: 1
+                                                }}
+                                                startIcon={<DeleteIcon />}
+                                                onClick={() => deleteCategory(category.kategori_id)}
+                                            />
+                                        </StyledTableCell>
+                                    </TableRow>
+                                ))
                             )}
                         </TableBody>
                     </Table>
@@ -261,7 +265,9 @@ const CategoriesManagement = () => {
             </Paper>
 
             <Dialog open={openDialog} onClose={handleDialogClose}>
-                <DialogTitle>{editingCategory ? 'Edit Category' : 'Add New Category'}</DialogTitle>
+                <DialogTitle>
+                    {editingCategory ? 'Edit Category' : 'Add New Category'}
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Category Name"

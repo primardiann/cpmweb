@@ -16,7 +16,8 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle
+    DialogTitle,
+    MenuItem,
 } from '@mui/material';
 import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
 import EditIcon from '@mui/icons-material/Edit';
@@ -38,18 +39,32 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
 }));
 
+const ResponsiveButtonContainer = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    gap: theme.spacing(1),
+    flexWrap: 'wrap',
+}));
+
+
 const PartSpecification = () => {
     const [specifications, setSpecifications] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
-    const [newSpecification, setNewSpecification] = useState({ kategori_id: '', nama_spesifikasi: '', nilai_standar: '' });
+    const [newSpecification, setNewSpecification] = useState({
+        kategori_id: '',
+        nama_spesifikasi: '',
+        nilai_standar: '',
+    });
     const [editingSpecification, setEditingSpecification] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
         fetchSpecifications();
+        fetchCategories();
     }, []);
 
     const fetchSpecifications = async () => {
@@ -60,6 +75,15 @@ const PartSpecification = () => {
         } catch (error) {
             console.error('Error fetching specifications:', error);
             setLoading(false);
+        }
+    };
+
+    const fetchCategories = async () => {
+        try {
+            const { data } = await axios.get('http://localhost:5000/api/kategori');
+            setCategories(data);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
         }
     };
 
@@ -77,7 +101,11 @@ const PartSpecification = () => {
     const handleDialogOpen = (specification = null) => {
         if (specification) {
             setEditingSpecification(specification);
-            setNewSpecification({ kategori_id: specification.kategori_id, nama_spesifikasi: specification.nama_spesifikasi, nilai_standar: specification.nilai_standar });
+            setNewSpecification({
+                kategori_id: specification.kategori_id,
+                nama_spesifikasi: specification.nama_spesifikasi,
+                nilai_standar: specification.nilai_standar,
+            });
         } else {
             setEditingSpecification(null);
             setNewSpecification({ kategori_id: '', nama_spesifikasi: '', nilai_standar: '' });
@@ -184,7 +212,7 @@ const PartSpecification = () => {
                         sx={{ bgcolor: '#005DB8', color: 'white' }}
                         onClick={() => handleDialogOpen()}
                     >
-                        + New Specification
+                        + New Spesification
                     </Button>
                 </Box>
 
@@ -195,7 +223,7 @@ const PartSpecification = () => {
                                 <StyledTableCell>No</StyledTableCell>
                                 <StyledTableCell>Specification Name</StyledTableCell>
                                 <StyledTableCell>Category</StyledTableCell>
-                                <StyledTableCell>Standard Value</StyledTableCell>
+                                <StyledTableCell>Model Running</StyledTableCell>
                                 <StyledTableCell>Action</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -221,30 +249,35 @@ const PartSpecification = () => {
                                                 {index + 1 + page * rowsPerPage}
                                             </StyledTableCell>
                                             <StyledTableCell>{specification.nama_spesifikasi}</StyledTableCell>
-                                            <StyledTableCell>{specification.kategori_id}</StyledTableCell>
+                                            <StyledTableCell>{specification.nama_kategori}</StyledTableCell>
                                             <StyledTableCell>{specification.nilai_standar}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Button
-                                                    variant="contained"
-                                                    sx={{
-                                                        bgcolor: '#FF9707',
-                                                        color: 'white',
-                                                        borderRadius: '8px',
-                                                    }}
-                                                    startIcon={<EditIcon />}
-                                                    onClick={() => handleDialogOpen(specification)}
-                                                />
-                                                <Button
-                                                    variant="contained"
-                                                    sx={{
-                                                        bgcolor: '#FF1707',
-                                                        color: 'white',
-                                                        borderRadius: '8px',
-                                                        ml: 1,
-                                                    }}
-                                                    startIcon={<DeleteIcon />}
-                                                    onClick={() => deleteSpecification(specification.spesifikasi_id)}
-                                                />
+                                                <ResponsiveButtonContainer>
+                                                    <Button
+                                                        variant="contained"
+                                                        sx={{
+                                                            bgcolor: '#FF9707',
+                                                            color: 'white',
+                                                            borderRadius: '8px',
+                                                        }}
+                                                        startIcon={<EditIcon />}
+                                                        onClick={() => handleDialogOpen(specification)}
+                                                    >
+                                                        
+                                                    </Button>
+                                                    <Button
+                                                        variant="contained"
+                                                        sx={{
+                                                            bgcolor: '#FF1707',
+                                                            color: 'white',
+                                                            borderRadius: '8px',
+                                                        }}
+                                                        startIcon={<DeleteIcon />}
+                                                        onClick={() => deleteSpecification(specification.spesifikasi_id)}
+                                                    >
+                                                        
+                                                    </Button>
+                                                </ResponsiveButtonContainer>
                                             </StyledTableCell>
                                         </TableRow>
                                     ))
@@ -264,32 +297,44 @@ const PartSpecification = () => {
                 />
             </Paper>
 
+            {/* Dialog for Add/Edit */}
             <Dialog open={openDialog} onClose={handleDialogClose}>
                 <DialogTitle>{editingSpecification ? 'Edit Specification' : 'Add New Specification'}</DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Specification Name"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
                         name="nama_spesifikasi"
                         value={newSpecification.nama_spesifikasi}
                         onChange={handleInputChange}
-                        fullWidth
-                        sx={{ mb: 2 }}
-                    />
-                    <TextField
-                        label="Category ID"
-                        name="kategori_id"
-                        value={newSpecification.kategori_id}
-                        onChange={handleInputChange}
-                        fullWidth
-                        sx={{ mb: 2 }}
                     />
                     <TextField
                         label="Standard Value"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
                         name="nilai_standar"
                         value={newSpecification.nilai_standar}
                         onChange={handleInputChange}
-                        fullWidth
                     />
+                    <TextField
+                        select
+                        label="Category"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        name="kategori_id"
+                        value={newSpecification.kategori_id}
+                        onChange={handleInputChange}
+                    >
+                        {categories.map((category) => (
+                            <MenuItem key={category.kategori_id} value={category.kategori_id}>
+                                {category.nama_kategori}
+                            </MenuItem>
+                        ))}
+                    </TextField>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose} color="secondary">

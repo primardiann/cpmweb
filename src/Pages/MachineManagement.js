@@ -20,7 +20,7 @@ import {
     MenuItem,
     Select,
     FormControl,
-    InputLabel
+    InputLabel,
 } from '@mui/material';
 import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
 import EditIcon from '@mui/icons-material/Edit';
@@ -40,6 +40,13 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         fontSize: 14,
         padding: '8px',
     },
+}));
+
+const ResponsiveButtonContainer = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    gap: theme.spacing(1),
+    flexWrap: 'wrap',
 }));
 
 const MachineManagement = () => {
@@ -197,6 +204,7 @@ const MachineManagement = () => {
                         justifyContent: 'space-between',
                         mb: 2,
                         alignItems: 'center',
+                        flexWrap: 'wrap',
                     }}
                 >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -254,21 +262,32 @@ const MachineManagement = () => {
                                             <StyledTableCell>{machine.kode_line}</StyledTableCell>
                                             <StyledTableCell>{machine.nama_kategori}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Button
-                                                    variant="contained"
-                                                    onClick={() => handleDialogOpen(machine)}
-                                                    startIcon={<EditIcon />}
-                                                >
-                                                    Edit
-                                                </Button>
-                                                <Button
-                                                    variant="contained"
-                                                    sx={{ bgcolor: '#FF0000', color: 'white' }}
-                                                    onClick={() => deleteMachine(machine.mesin_id)}
-                                                    startIcon={<DeleteIcon />}
-                                                >
-                                                    Delete
-                                                </Button>
+                                                <ResponsiveButtonContainer>
+                                                    <Button
+                                                        variant="contained"
+                                                        sx={{
+                                                            bgcolor: '#FF9707',
+                                                            color: 'white',
+                                                            borderRadius: '8px',
+                                                        }}
+                                                        startIcon={<EditIcon />}
+                                                        onClick={() => handleDialogOpen(machine)}
+                                                    >
+                                                        
+                                                    </Button>
+                                                    <Button
+                                                        variant="contained"
+                                                        sx={{
+                                                            bgcolor: '#FF1707',
+                                                            color: 'white',
+                                                            borderRadius: '8px',
+                                                        }}
+                                                        startIcon={<DeleteIcon />}
+                                                        onClick={() => deleteMachine(machine.mesin_id)}
+                                                    >
+                                                        
+                                                    </Button>
+                                                </ResponsiveButtonContainer>
                                             </StyledTableCell>
                                         </TableRow>
                                     ))
@@ -281,33 +300,34 @@ const MachineManagement = () => {
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={filteredMachines.length}
+                    rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
-                    rowsPerPage={rowsPerPage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
 
-            <Dialog open={openDialog} onClose={handleDialogClose}>
-                <DialogTitle>{editingMachine ? 'Edit Machine' : 'Add Machine'}</DialogTitle>
+            {/* Dialog for Add/Edit */}
+            <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm">
+                <DialogTitle>{editingMachine ? 'Edit Machine' : 'Add New Machine'}</DialogTitle>
                 <DialogContent>
                     <TextField
-                        fullWidth
-                        margin="normal"
+                        margin="dense"
                         label="Machine Name"
                         name="nama_mesin"
+                        fullWidth
                         value={newMachine.nama_mesin}
                         onChange={handleInputChange}
                     />
                     <TextField
-                        fullWidth
-                        margin="normal"
+                        margin="dense"
                         label="Machine Code"
                         name="kode_mesin"
+                        fullWidth
                         value={newMachine.kode_mesin}
                         onChange={handleInputChange}
                     />
-                    <FormControl fullWidth margin="normal">
+                    <FormControl margin="dense" fullWidth>
                         <InputLabel>Line</InputLabel>
                         <Select
                             name="kode_line"
@@ -321,7 +341,7 @@ const MachineManagement = () => {
                             ))}
                         </Select>
                     </FormControl>
-                    <FormControl fullWidth margin="normal">
+                    <FormControl margin="dense" fullWidth>
                         <InputLabel>Category</InputLabel>
                         <Select
                             name="nama_kategori"
@@ -337,13 +357,19 @@ const MachineManagement = () => {
                     </FormControl>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
+                    <Button
+                        onClick={handleDialogClose}
+                        sx={{ color: '#0055A8' }}
+                    >
                         Cancel
                     </Button>
                     <Button
                         onClick={editingMachine ? updateMachine : addMachine}
-                        color="primary"
                         disabled={!isFormValid()}
+                        sx={{
+                            bgcolor: '#005DB8',
+                            color: 'white',
+                        }}
                     >
                         {editingMachine ? 'Update' : 'Add'}
                     </Button>
