@@ -308,70 +308,101 @@ const MachineManagement = () => {
             </Paper>
 
             {/* Dialog for Add/Edit */}
-            <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm">
+            <Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm"
+            sx={{
+                '& .MuiDialog-paper': {
+                    width: '550px',    
+                    height: '460px',    
+                    maxWidth: 'none',   
+                    },
+                    }}>
                 <DialogTitle>{editingMachine ? 'Edit Machine' : 'Add New Machine'}</DialogTitle>
                 <DialogContent>
-                    <TextField
+                    {/*Line Name*/}
+                    <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                            Machine Name:
+                        </Typography>
+                        <TextField
                         margin="dense"
-                        label="Machine Name"
+                        fullWidth
+                        value={newMachine.nama_mesin || ''}
+                        onChange={handleInputChange}
                         name="nama_mesin"
-                        fullWidth
-                        value={newMachine.nama_mesin}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
+                        />
+                    </Box>
+                    {/* Machine Code */}
+                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                            Machine Code:
+                        </Typography>
+                        <TextField
                         margin="dense"
-                        label="Machine Code"
-                        name="kode_mesin"
                         fullWidth
-                        value={newMachine.kode_mesin}
+                        value={newMachine.kode_mesin || ''}
                         onChange={handleInputChange}
-                    />
-                    <FormControl margin="dense" fullWidth>
-                        <InputLabel>Line</InputLabel>
-                        <Select
-                            name="kode_line"
-                            value={newMachine.kode_line}
-                            onChange={handleInputChange}
-                        >
-                            {lines.map((line) => (
-                                <MenuItem key={line.id} value={line.kode_line}>
-                                    {line.kode_line}
-                                </MenuItem>
+                        name="kode_mesin"
+                        />
+                    </Box>
+                    {/* Line */}
+                   <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                       <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                           Line:
+                       </Typography>
+                       <Select 
+                       margin="dense"
+                       fullWidth
+                       name="kode_line"
+                       value={newMachine.kode_line}
+                       onChange={handleInputChange}
+                       >
+                      {lines.map((line) => (
+                      <MenuItem key={line.id} value={line.kode_line}>
+                        {line.kode_line}
+                      </MenuItem>
+                      ))}
+                     </Select>
+                  </Box>
+                  {/* Category */}
+                  <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                           Category:
+                      </Typography>
+                      <Select
+                      margin="dense"
+                      fullWidth
+                      name="nama_kategori"
+                      value={newMachine.nama_kategori}
+                      onChange={handleInputChange}
+                      >
+                      {categories.map((category) => (
+                      <MenuItem key={category.id} value={category.nama_kategori}>
+                        {category.nama_kategori}
+                      </MenuItem>
                             ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl margin="dense" fullWidth>
-                        <InputLabel>Category</InputLabel>
-                        <Select
-                            name="nama_kategori"
-                            value={newMachine.nama_kategori}
-                            onChange={handleInputChange}
-                        >
-                            {categories.map((category) => (
-                                <MenuItem key={category.id} value={category.nama_kategori}>
-                                    {category.nama_kategori}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                      </Select>
+                  </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        onClick={handleDialogClose}
-                        sx={{ color: '#0055A8' }}
-                    >
-                        Cancel
+                <Button variant="contained" onClick={handleDialogClose}
+                        sx={{
+                            bgcolor: '#7F7F7F',
+                            color: 'white',
+                            '&:hover' : {
+                            bgcolor: '#7F7F7F'
+                            },
+                            width: '100px',
+                            }}>
+                            Cancel
                     </Button>
                     <Button
                         onClick={editingMachine ? updateMachine : addMachine}
-                        disabled={!isFormValid()}
                         sx={{
-                            bgcolor: '#005DB8',
+                            bgcolor: '#0055A8',
                             color: 'white',
                         }}
                     >
-                        {editingMachine ? 'Update' : 'Add'}
+                        {editingMachine ? 'Save Changes' : 'Add Machine'}
                     </Button>
                 </DialogActions>
             </Dialog>

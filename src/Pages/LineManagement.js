@@ -100,13 +100,13 @@ const LineManagement = () => {
 
     const addLine = async () => {
         if (!newLine.kode_line || !newLine.lokasi) {
-            alert('Kode Line dan Lokasi wajib diisi!');
+            alert('All fields are required!');
             return;
         }
 
         try {
             const response = await axios.post('http://localhost:5000/api/line', newLine);
-            alert(response.data.message);
+            alert('Line added successfully');
             fetchLines();
             handleDialogClose();
         } catch (error) {
@@ -116,7 +116,7 @@ const LineManagement = () => {
 
     const updateLine = async () => {
         if (!newLine.kode_line || !newLine.lokasi) {
-            alert('Kode Line dan Lokasi wajib diisi!');
+            alert('All fields are required!');
             return;
         }
 
@@ -125,7 +125,7 @@ const LineManagement = () => {
                 `http://localhost:5000/api/line/${editingLine.line_id}`,
                 newLine
             );
-            alert(response.data.message);
+            alert('Line updated successfully');
             fetchLines();
             handleDialogClose();
         } catch (error) {
@@ -136,7 +136,7 @@ const LineManagement = () => {
     const deleteLine = async (line_id) => {
         try {
             const response = await axios.delete(`http://localhost:5000/api/line/${line_id}`);
-            alert(response.data.message);
+            alert('Line deleted successfully');
             fetchLines();
         } catch (error) {
             console.error('Error deleting line:', error);
@@ -262,27 +262,52 @@ const LineManagement = () => {
                 />
             </Paper>
 
-            <Dialog open={openDialog} onClose={handleDialogClose}>
+            <Dialog open={openDialog} onClose={handleDialogClose} sx={{
+                '& .MuiDialog-paper': {
+                    width: '550px',    
+                    height: '320px',    
+                    maxWidth: 'none',   
+                    },
+                    }}>
                 <DialogTitle>{editingLine ? 'Edit Line' : 'Add New Line'}</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        label="Line Name"
+                    {/*Line Name*/}
+                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                            Line Name:
+                        </Typography>
+                        <TextField
+                        fullWidth
+                        value={newLine.kode_line || ''}
+                        onChange={handleInputChange}
                         name="kode_line"
-                        value={newLine.kode_line}
-                        onChange={handleInputChange}
+                        />
+                    </Box>
+                    {/*Location*/}
+                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                            Location:
+                        </Typography>
+                        <TextField
                         fullWidth
-                        sx={{ mb: 2 }}
-                    />
-                    <TextField
-                        label="Location"
+                        value={newLine.lokasi || ''}
+                        onChange={handleInputChange}
                         name="lokasi"
-                        value={newLine.lokasi}
-                        onChange={handleInputChange}
-                        fullWidth
-                    />
+                        />
+                    </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose}>Cancel</Button>
+                    <Button variant="contained" onClick={handleDialogClose}
+                        sx={{
+                            bgcolor: '#7F7F7F',
+                            color: 'white',
+                            '&:hover' : {
+                            bgcolor: '#7F7F7F'
+                            },
+                            width: '100px',
+                            }}>
+                            Cancel
+                    </Button>
                     <Button
                         onClick={editingLine ? updateLine : addLine}
                         sx={{ bgcolor: '#0055A8', color: 'white' }}

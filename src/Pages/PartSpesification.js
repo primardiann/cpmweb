@@ -19,6 +19,7 @@ import {
     DialogTitle,
     MenuItem,
 } from '@mui/material';
+import { Select } from '@mui/material';
 import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -298,54 +299,84 @@ const PartSpecification = () => {
             </Paper>
 
             {/* Dialog for Add/Edit */}
-            <Dialog open={openDialog} onClose={handleDialogClose}>
+            <Dialog open={openDialog} onClose={handleDialogClose}
+            sx={{
+                '& .MuiDialog-paper': {
+                    width: '550px',    
+                    height: '380px',    
+                    maxWidth: 'none',   
+                    },
+                    }}>
                 <DialogTitle>{editingSpecification ? 'Edit Specification' : 'Add New Specification'}</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        label="Specification Name"
-                        variant="outlined"
+                    {/*Spesification Name*/}
+                    <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                            Spesification Name:
+                        </Typography>
+                        <TextField
+                        margin="dense"
                         fullWidth
-                        margin="normal"
+                        value={newSpecification.nama_spesifikasi || ''}
+                        onChange={handleInputChange}
                         name="nama_spesifikasi"
-                        value={newSpecification.nama_spesifikasi}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        label="Standard Value"
-                        variant="outlined"
+                        />
+                    </Box>
+                    {/*Standard Value*/}
+                    <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                            Standard Value:
+                        </Typography>
+                        <TextField
+                        margin="dense"
                         fullWidth
-                        margin="normal"
+                        value={newSpecification.nilai_standar || ''}
+                        onChange={handleInputChange}
                         name="nilai_standar"
-                        value={newSpecification.nilai_standar}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        select
-                        label="Category"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        name="kategori_id"
-                        value={newSpecification.kategori_id}
-                        onChange={handleInputChange}
-                    >
-                        {categories.map((category) => (
+                        />
+                    </Box>
+                    {/* Category */}
+                  <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                           Category:
+                      </Typography>
+                      <Select
+                      margin="dense"
+                      fullWidth
+                      name="kategori_id"
+                      value={newSpecification.kategori_id}
+                      onChange={handleInputChange}
+                      >
+                      {categories.map((category) => (
                             <MenuItem key={category.kategori_id} value={category.kategori_id}>
                                 {category.nama_kategori}
                             </MenuItem>
-                        ))}
-                    </TextField>
+                            ))}
+                      </Select>
+                  </Box>  
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose} color="secondary">
-                        Cancel
+                <Button variant="contained" onClick={handleDialogClose}
+                        sx={{
+                            bgcolor: '#7F7F7F',
+                            color: 'white',
+                            '&:hover' : {
+                            bgcolor: '#7F7F7F'
+                            },
+                            width: '100px',
+                            }}>
+                            Cancel
                     </Button>
                     <Button
-                        onClick={editingSpecification ? updateSpecification : addSpecification}
-                        color="primary"
+                        onClick={editingSpecification? updateSpecification : addSpecification}
+                        sx={{
+                            bgcolor: '#0055A8',
+                            color: 'white',
+                        }}
                     >
-                        {editingSpecification ? 'Update' : 'Add'}
+                        {editingSpecification? 'Save Changes' : 'Add Spesification'}
                     </Button>
+                    
                 </DialogActions>
             </Dialog>
         </Box>
