@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
+import axios from 'axios'; // Import axios
 import {
     Box,
     Typography,
@@ -57,41 +58,39 @@ function UserManagement() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const method = isEditing ? 'PUT' : 'POST';
         const url = isEditing
             ? `http://localhost:5000/api/users/${formData.user_id}`
             : 'http://localhost:5000/api/users';
 
-        fetch(url, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (isEditing) {
-                    setUsers(users.map(item => item.user_id === formData.user_id ? formData : item));
-                } else {
-                    setUsers([...users, data]);
-                }
-                handleCloseModal();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("An error occurred while saving the data.");
+        try {
+            const response = await axios({
+                method: method,
+                url: url,
+                data: formData
             });
+
+            if (isEditing) {
+                setUsers(users.map(item => item.user_id === formData.user_id ? response.data : item));
+                alert('User updated successfully!');
+            } else {
+                setUsers([...users, response.data]);
+                alert('User added successfully!');
+            }
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error:', error);
+            alert("An error occurred while saving the data.");
+        }
     };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/users');
-                const data = await response.json();
-                const formattedData = data.map(user => ({
+                const response = await axios.get('http://localhost:5000/api/users');
+                const formattedData = response.data.map(user => ({
                     user_id: user.user_id,
                     nama: user.nama,
                     email: user.email,
@@ -126,15 +125,15 @@ function UserManagement() {
         setOpenModal(true);
     };
 
-    const handleDeleteData = (user_id) => {
-        fetch(`http://localhost:5000/api/users/${user_id}`, { method: 'DELETE' })
-            .then(() => {
-                setUsers(users.filter(item => item.user_id !== user_id));
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("An error occurred while deleting the user.");
-            });
+    const handleDeleteData = async (user_id) => {
+        try {
+            await axios.delete(`http://localhost:5000/api/users/${user_id}`);
+            setUsers(users.filter(item => item.user_id !== user_id));
+            alert('User deleted successfully!');
+        } catch (error) {
+            console.error('Error:', error);
+            alert("An error occurred while deleting the user.");
+        }
     };
 
     const handleCloseModal = () => {
@@ -163,7 +162,6 @@ function UserManagement() {
             user.nama?.toLowerCase().includes(searchTerm.toLowerCase()) || 
             user.email?.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    
 
     return (
         <Box sx={{ p: 2 }}>
