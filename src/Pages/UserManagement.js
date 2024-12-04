@@ -15,10 +15,11 @@ import {
     TablePagination,
     TextField,
     Divider,
-    Modal,
+    Dialog,
     CircularProgress,
-    FormControl,
-    InputLabel,
+    DialogTitle,
+    DialogActions,
+    DialogContent,
     Select,
     MenuItem
 } from '@mui/material';
@@ -50,7 +51,7 @@ function UserManagement() {
         user_id: '',
         nama: '',
         email: '',
-        role: 'pegawai',
+        role: 'employee',
         no_hp: '',
         kata_sandi: ''
     });
@@ -109,13 +110,13 @@ function UserManagement() {
     }, []);
 
     const handleCancel = () => {
-        setFormData({ user_id: '', nama: '', email: '', role: 'pegawai', no_hp: '', kata_sandi: '' });
+        setFormData({ user_id: '', nama: '', email: '', role: 'employee', no_hp: '', kata_sandi: '' });
         handleCloseModal();
     };
 
     const handleTambahData = () => {
         setIsEditing(false);
-        setFormData({ user_id: '', nama: '', email: '', role: 'pegawai', no_hp: '', kata_sandi: '' });
+        setFormData({ user_id: '', nama: '', email: '', role: 'employee', no_hp: '', kata_sandi: '' });
         setOpenModal(true);
     };
 
@@ -138,7 +139,7 @@ function UserManagement() {
 
     const handleCloseModal = () => {
         setOpenModal(false);
-        setFormData({ user_id: '', nama: '', email: '', role: 'pegawai', no_hp: '', kata_sandi: '' });
+        setFormData({ user_id: '', nama: '', email: '', role: 'employee', no_hp: '', kata_sandi: '' });
     };
 
     const handleChange = (e) => {
@@ -270,96 +271,124 @@ function UserManagement() {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
 
-                {/* Modal for Adding/Editing User */}
-                <Modal open={openModal} onClose={handleCloseModal}>
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: 550,
-                            height: 500,
-                            bgcolor: 'background.paper',
-                            boxShadow: 24,
-                            borderRadius: 4,
-                            p: 3,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'space-between'
-                        }}
-                    >
-                        <Typography variant="h6" gutterBottom>
-                            {isEditing ? 'Edit User' : 'Add New User'}
-                        </Typography>
-                        <form onSubmit={handleSubmit}>
-                            <TextField
-                                label="Name"
-                                fullWidth
-                                margin="normal"
-                                name="nama"
-                                value={formData.nama}
-                                onChange={handleChange}
-                                required
-                            />
-                            <TextField
-                                label="Email"
-                                fullWidth
-                                margin="normal"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                            />
-                            {!isEditing && (
-                                <TextField
-                                    label="Password"
-                                    type="password"
-                                    fullWidth
-                                    margin="normal"
-                                    name="kata_sandi"
-                                    value={formData.kata_sandi}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            )}
-                            <FormControl fullWidth margin="normal">
-                                <InputLabel>Role</InputLabel>
-                                <Select
-                                    name="role"
-                                    value={formData.role}
-                                    onChange={handleChange}
-                                    label="Role"
-                                    disabled={isEditing}
-                                >
-                                    <MenuItem value="pegawai">pegawai</MenuItem>
-                                    <MenuItem value="admin">admin</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <TextField
-                                label="Phone"
-                                fullWidth
-                                margin="normal"
-                                name="no_hp"
-                                value={formData.no_hp}
-                                onChange={handleChange}
-                                required
-                            />
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                                <Button variant="outlined" onClick={handleCancel}>
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    type="submit"
-                                    sx={{ bgcolor: '#005DB8', color: 'white' }}
-                                >
-                                    {isEditing ? 'Update' : 'Add'}
-                                </Button>
-                            </Box>
-                        </form>
-                    </Box>
-                </Modal>
+     {/* Modal for Adding/Editing User */}
+    <Dialog open={openModal} onClose={handleCloseModal} fullWidth maxWidth="sm"
+        sx={{
+        '& .MuiDialog-paper': {
+        width: '550px',
+        height: '550px',
+         maxWidth: 'none',
+         },
+        }} 
+        > 
+    <DialogTitle>{isEditing ? 'Edit User' : 'Add New User'}</DialogTitle>
+    <DialogContent>
+        {/* Name */}
+        <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                Name:
+            </Typography>
+            <TextField
+                margin="dense"
+                fullWidth
+                value={formData.nama || ''}
+                onChange={handleChange}
+                name="nama"
+                required
+            />
+        </Box>
+        {/* Email */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                Email:
+            </Typography>
+            <TextField
+                margin="dense"
+                fullWidth
+                value={formData.email || ''}
+                onChange={handleChange}
+                name="email"
+                required
+            />
+        </Box>
+        {/* Password */}
+        {!isEditing && (
+            <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                    Password:
+                </Typography>
+                <TextField
+                    type="password"
+                    margin="dense"
+                    fullWidth
+                    value={formData.kata_sandi || ''}
+                    onChange={handleChange}
+                    name="kata_sandi"
+                    required
+                />
+            </Box>
+        )}
+        {/* Role */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                Role:
+            </Typography>
+            <Select
+                margin="dense"
+                fullWidth
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                disabled={isEditing}
+            >
+                <MenuItem value="employee">employee</MenuItem>
+                <MenuItem value="admin">admin</MenuItem>
+            </Select>
+        </Box>
+        {/* Phone */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                No. HP:
+            </Typography>
+            <TextField
+                margin="dense"
+                fullWidth
+                value={formData.no_hp || ''}
+                onChange={handleChange}
+                name="no_hp"
+                required
+            />
+        </Box>
+    </DialogContent>         
+    <DialogActions>
+        <Button
+            variant="outlined"
+            onClick={handleCancel}
+            sx={{
+                bgcolor: '#7F7F7F',
+                color: 'white',
+                '&:hover': {
+                    bgcolor: '#7F7F7F',
+                },
+                width: '100px',
+            }}
+        >
+            Cancel
+        </Button>
+        <Button
+            variant="contained"
+            type="submit"
+            onClick={handleSubmit} 
+            sx={{
+                bgcolor: '#005DB8',
+                color: 'white',
+            }}
+        >
+            {isEditing ? 'Save changes' : 'Add user'}
+        </Button>
+    </DialogActions>
+</Dialog>
+
             </Paper>
         </Box>
     );
