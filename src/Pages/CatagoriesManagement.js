@@ -264,22 +264,41 @@ const CategoriesManagement = () => {
                 />
             </Paper>
 
-            <Dialog open={openDialog} onClose={handleDialogClose}>
+            <Dialog open={openDialog} onClose={handleDialogClose}  sx={{
+                '& .MuiDialog-paper': {
+                    width: '550px',     
+                    height: '240px',    
+                    maxWidth: 'none',   
+                    },
+                    }}>
                 <DialogTitle>
                     {editingCategory ? 'Edit Category' : 'Add New Category'}
                 </DialogTitle>
                 <DialogContent>
-                    <TextField
-                        label="Category Name"
-                        name="nama_kategori"
-                        value={newCategory.nama_kategori}
-                        onChange={handleInputChange}
+                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                            Categories :
+                        </Typography>
+                        <TextField
                         fullWidth
-                        sx={{ mb: 2 }}
-                    />
+                        value={newCategory.nama_kategori|| ''}
+                        onChange={handleInputChange}
+                        name="nama_kategori"
+                        />
+                    </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose}>Cancel</Button>
+                <Button variant="contained" onClick={handleDialogClose}
+                        sx={{
+                            bgcolor: '#7F7F7F',
+                            color: 'white',
+                            '&:hover' : {
+                            bgcolor: '#7F7F7F'
+                            },
+                            width: '100px',
+                            }}>
+                            Cancel
+                    </Button>
                     <Button
                         onClick={editingCategory ? updateCategory : addCategory}
                         sx={{ bgcolor: '#0055A8', color: 'white' }}
