@@ -159,10 +159,11 @@ function UserManagement() {
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
 
     const filteredUsers = users.filter(
-        user =>
-            user.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        (user) => 
+            user.nama?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            user.email?.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    
 
     return (
         <Box sx={{ p: 2 }}>
