@@ -271,7 +271,7 @@ const CategoriesManagement = () => {
                     maxWidth: 'none',   
                     },
                     }}>
-                <DialogTitle>
+                <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>
                     {editingCategory ? 'Edit Category' : 'Add New Category'}
                 </DialogTitle>
                 <DialogContent>

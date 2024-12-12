@@ -269,7 +269,7 @@ const LineManagement = () => {
                     maxWidth: 'none',   
                     },
                     }}>
-                <DialogTitle>{editingLine ? 'Edit Line' : 'Add New Line'}</DialogTitle>
+                <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>{editingLine ? 'Edit Line' : 'Add New Line'}</DialogTitle>
                 <DialogContent>
                     {/*Line Name*/}
                     <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>

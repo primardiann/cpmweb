@@ -217,7 +217,7 @@ const ChangePartManagementReportsEmployee = () => {
                         
                         {/* Modal/Form Input CPM */}
                         <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-                        <DialogTitle>CPM Reports Input</DialogTitle>
+                        <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>CPM Reports Input</DialogTitle>
                         <DialogContent>
                         {/* Lines */}
                         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
@@ -406,7 +406,7 @@ const ChangePartManagementReportsEmployee = () => {
 
   {/* Detail Modal CPM */}
   <Dialog open={openDetailModal} onClose={handleCloseDetailModal} maxWidth="md" fullWidth>
-    <DialogTitle>Detail CPM Reports</DialogTitle>
+    <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>Detail CPM Reports</DialogTitle>
     <DialogContent>
         {/* Report ID */}
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>

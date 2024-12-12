@@ -171,7 +171,7 @@ const Dashboard = () => {
                                 icon: <AssignmentIcon/>,
                                 path: '/cpm_reports'
                             }, {
-                                text: 'Settings',
+                                text: 'Profil',
                                 icon: <SettingsIcon/>,
                                 path: '/settings'
                             }

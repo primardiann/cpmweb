@@ -307,7 +307,7 @@ const PartSpecification = () => {
                     maxWidth: 'none',   
                     },
                     }}>
-                <DialogTitle>{editingSpecification ? 'Edit Specification' : 'Add New Specification'}</DialogTitle>
+                <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>{editingSpecification ? 'Edit Specification' : 'Add New Specification'}</DialogTitle>
                 <DialogContent>
                     {/*Spesification Name*/}
                     <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>

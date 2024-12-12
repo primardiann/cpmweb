@@ -17,11 +17,15 @@ import {
   Divider,
   Select,
   MenuItem,
+  Card,
+  Radio,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions
 } from '@mui/material';
+import { FormControlLabel, Checkbox } from '@mui/material';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -50,6 +54,7 @@ const ChangePartManagementReports = () => {
   const [dateFilter, setDateFilter] = useState('');
   const [openDetailModal, setOpenDetailModal] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
+  const [selectedValue, setSelectedValue] = useState(''); // State untuk menyimpan pilihan
 
   // Fetch data from API
   useEffect(() => {
@@ -68,6 +73,11 @@ const ChangePartManagementReports = () => {
 
     fetchReports();
   }, []);
+  
+    // Menghandle perubahan pilihan
+    const handleChange = (event) => {
+      setSelectedValue(event.target.value);
+    };
 
   // Event Handlers
   const handleChangePage = (event, newPage) => setPage(newPage);
@@ -201,11 +211,29 @@ const ChangePartManagementReports = () => {
                       <StyledTableCell>{report.nama_mesin}</StyledTableCell>
                       <StyledTableCell>{report.created_at}</StyledTableCell>
                       <StyledTableCell>
-                        <AssignmentIcon
-                          sx={{ cursor: 'pointer', color: '#0055A8' }}
-                          onClick={() => handleOpenDetailModal(report)}
-                        />
-                      </StyledTableCell>
+                        <Card
+                        onClick={() => handleOpenDetailModal(report)}
+                        sx={{
+                          width: '80px',
+                          height: '40px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          bgcolor: '#1B80E3',
+                          boxShadow: 1,
+                          transition: '0.3s',
+                          cursor: 'pointer',
+                          '&:hover': {
+                            transform: 'scale(1.05)'
+                           }
+                          }}>
+                            <AssessmentIcon
+                            sx={{
+                              color: 'white'
+                            }}
+                            />
+                            </Card>
+                            </StyledTableCell>
                     </TableRow>
                   ))
               ) : (
@@ -230,120 +258,147 @@ const ChangePartManagementReports = () => {
       </Paper>
 
       {/* Detail Modal CPM */}
-<Dialog open={openDetailModal} onClose={handleCloseDetailModal} maxWidth="md" fullWidth>
-  <DialogTitle>Detail CPM Reports</DialogTitle>
+<Dialog open={openDetailModal} onClose={handleCloseDetailModal} maxWidth="lg" fullWidth>
+  <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>Detail CPM Reports</DialogTitle>
   <DialogContent>
-    {/* Line */}
-    {/* Line */}
-<Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-  <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Line:</Typography>
-  <TextField
-    fullWidth
-    value={selectedReport?.kode_line || ''}
-    disabled // Tidak bisa diedit
-  />
-</Box>
+  <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 3 }}>
+      {/* Kolom Kiri */}
+      <Box sx={{ flex: 1, minWidth: '300px' }}>
+        {/* Lines */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px'}}>Lines:</Typography>
+          <TextField fullWidth variant="outlined"     value={selectedReport?.kode_line || ''} />
+        </Box>
 
-{/* Report ID */}
-<Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-  <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Report ID:</Typography>
-  <TextField
-    fullWidth
-    value={`#${selectedReport?.id || ''}`}
-    disabled // Tidak bisa diedit
-  />
-</Box>
+        {/* Report ID */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px'}}>Report ID:</Typography>
+          <TextField fullWidth variant="outlined" value={`#${selectedReport?.id || ''}`} />
+        </Box>
 
-{/* Machine Name/ID */}
-<Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-  <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Machine Name/ID:</Typography>
-  <TextField
-    fullWidth
-    value={selectedReport?.nama_mesin || ''}
-    disabled // Tidak bisa diedit
-  />
-</Box>
+        {/* Machine Name */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px'}}>Machine Name:</Typography>
+          <TextField fullWidth variant="outlined"  value={selectedReport?.nama_mesin || ''} />
+        </Box>
 
-{/* Machine Category */}
-<Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-  <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Machine Category:</Typography>
-  <TextField
-    fullWidth
-    value={selectedReport?.nama_kategori || ''}
-    disabled // Tidak bisa diedit
-  />
-</Box>
+        {/* Machine Category */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px'}}>Machine Category:</Typography>
+          <TextField fullWidth variant="outlined" value={selectedReport?.nama_kategori || ''} />
+        </Box>
+      </Box>
 
+      {/* Kolom Kanan */}
+      <Box sx={{ flex: 1, minWidth: '300px' }}>
+        {/* Name Employee */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px'}}>Name Employee:</Typography>
+          <TextField fullWidth variant="outlined" value="Muhammad Budi" />
+        </Box>
 
-    {/* Specifications Table */}
-    <TableContainer component={Paper} sx={{ mt: 2 }}>
-      <Table>
-        <TableHead sx={{ backgroundColor: '#EBEBEB' }}>
-          <TableRow>
-            <TableCell sx={{ fontSize: '16px' }}>Specification</TableCell>
-            <TableCell sx={{ fontSize: '16px' }}>Model Running</TableCell>
-            <TableCell sx={{ fontSize: '16px' }}>Actual Part</TableCell>
-            <TableCell sx={{ fontSize: '16px' }}>Qty</TableCell>
-            <TableCell sx={{ fontSize: '16px' }}>Judgment</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell>Specification 1</TableCell>
-            <TableCell>Model Running 1</TableCell>
-            <TableCell>
-              <TextField size="small" value="Actual Part 1" sx={{ color: 'black', fontSize: '14px' }} />
-            </TableCell>
-            <TableCell>
-              <TextField size="small" value="10" sx={{ color: 'black', fontSize: '14px'}} />
-            </TableCell>
-            <TableCell>
-              <Typography sx={{ color: 'green', fontSize: '14px' }}>#OK</Typography>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Specification 2</TableCell>
-            <TableCell>Model Running 2</TableCell>
-            <TableCell>
-              <TextField size="small" value="Actual Part 2" sx={{ color: 'black', fontSize: '14px' }} />
-            </TableCell>
-            <TableCell>
-              <TextField size="small" value="15" sx={{ color: 'black', fontSize: '14px' }} />
-            </TableCell>
-            <TableCell>
-              <Typography sx={{ color: 'red', fontSize: '14px' }}>#NO</Typography>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Specification 3</TableCell>
-            <TableCell>Model Running 3</TableCell>
-            <TableCell>
-              <TextField size="small" value="Actual Part 3" sx={{ color: 'black', fontSize: '14px' }} />
-            </TableCell>
-            <TableCell>
-              <TextField size="small" value="20" sx={{ color: 'black', fontSize: '14px' }} />
-            </TableCell>
-            <TableCell>
-              <Typography sx={{ color: '#FFCC01', fontSize: '14px' }}>#NG</Typography>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+        {/* Verification */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px'}}>Verification:</Typography>
+          <TextField fullWidth variant="outlined" value={selectedReport?.verifikasi || ''} />
+        </Box>
 
-    {/* Verifikasi */}
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 3 }}>
-      <Typography variant="body1">Verifikasi:</Typography>
-      <TextField
-        multiline
-        rows={3} 
-        sx={{
-          flex: 1,
-          minHeight: '80px', 
-          width: '300px',
-        }}
-      />
+        {/* Date */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px'}}>Date:</Typography>
+          <TextField fullWidth variant="outlined" value={selectedReport?.created_at || ''}  />
+        </Box>
+
+        {/* Checked By */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px'}}>Checked By:</Typography>
+          <TextField fullWidth variant="outlined" value={selectedReport?.checked_by || ''} />
+        </Box>
+      </Box>
     </Box>
+
+    <Box sx={{ display: 'flex', alignItems: 'flex-start', mt: 2 }}>
+  {/* Specifications Table */}
+  <TableContainer component={Paper} sx={{ flexGrow: 1, mr: 2 }}>
+    <Table>
+      <TableHead sx={{ backgroundColor: '#EBEBEB' }}>
+        <TableRow>
+          <TableCell sx={{ fontSize: '16px' }}>Specification</TableCell>
+          <TableCell sx={{ fontSize: '16px' }}>Model Running</TableCell>
+          <TableCell sx={{ fontSize: '16px' }}>Actual Part</TableCell>
+          <TableCell sx={{ fontSize: '16px' }}>Qty</TableCell>
+          <TableCell sx={{ fontSize: '16px' }}>Judgment</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell>Specification 1</TableCell>
+          <TableCell>Model Running 1</TableCell>
+          <TableCell>
+            <TextField size="small" value="Actual Part 1" sx={{ color: 'black', fontSize: '14px' }} />
+          </TableCell>
+          <TableCell>
+            <TextField size="small" value="10" sx={{ color: 'black', fontSize: '14px' }} />
+          </TableCell>
+          <TableCell>
+            <Typography sx={{ color: 'green', fontSize: '14px' }}>#OK</Typography>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Specification 2</TableCell>
+          <TableCell>Model Running 2</TableCell>
+          <TableCell>
+            <TextField size="small" value="Actual Part 2" sx={{ color: 'black', fontSize: '14px' }} />
+          </TableCell>
+          <TableCell>
+            <TextField size="small" value="15" sx={{ color: 'black', fontSize: '14px' }} />
+          </TableCell>
+          <TableCell>
+            <Typography sx={{ color: 'red', fontSize: '14px' }}>#NO</Typography>
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Specification 3</TableCell>
+          <TableCell>Model Running 3</TableCell>
+          <TableCell>
+            <TextField size="small" value="Actual Part 3" sx={{ color: 'black', fontSize: '14px' }} />
+          </TableCell>
+          <TableCell>
+            <TextField size="small" value="20" sx={{ color: 'black', fontSize: '14px' }} />
+          </TableCell>
+          <TableCell>
+            <Typography sx={{ color: '#FFCC01', fontSize: '14px' }}>#NG</Typography>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  </TableContainer>
+
+    {/* Radio Buttons Samping Tabel */}
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+        <FormControlLabel
+          control={
+            <Radio
+              checked={selectedValue === 'approved'}
+              onChange={handleChange}
+              value="approved"
+            />
+          }
+          label={<Typography sx={{ color: 'green' }}>Approved</Typography>} // Mengubah warna tulisan
+        />
+        <FormControlLabel
+          control={
+            <Radio
+              checked={selectedValue === 'rejected'}
+              onChange={handleChange}
+              value="rejected"
+            />
+          }
+          label={<Typography sx={{ color: 'red' }}>Rejected</Typography>} // Mengubah warna tulisan
+        />
+      </Box>
+    </Box>
+
   </DialogContent>
   <DialogActions>
     <Button onClick={handleCloseDetailModal}  

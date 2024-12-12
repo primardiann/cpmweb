@@ -281,7 +281,7 @@ function UserManagement() {
          },
         }} 
         > 
-    <DialogTitle>{isEditing ? 'Edit User' : 'Add New User'}</DialogTitle>
+    <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>{isEditing ? 'Edit User' : 'Add New User'}</DialogTitle>
     <DialogContent>
         {/* Name */}
         <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>

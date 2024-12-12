@@ -78,7 +78,7 @@ const Settings = () => {
                     }}
                 >
                     <SettingsIcon sx={{ mr: 1 }} />
-                    Settings
+                    Profil
                 </Typography>
 
                 <Divider sx={{ mb: 2 }} />

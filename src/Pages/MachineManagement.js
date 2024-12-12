@@ -316,7 +316,7 @@ const MachineManagement = () => {
                     maxWidth: 'none',   
                     },
                     }}>
-                <DialogTitle>{editingMachine ? 'Edit Machine' : 'Add New Machine'}</DialogTitle>
+                <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>{editingMachine ? 'Edit Machine' : 'Add New Machine'}</DialogTitle>
                 <DialogContent>
                     {/*Line Name*/}
                     <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
