@@ -129,7 +129,7 @@ const DashboardEmployee = () => {
                         icon: <AssignmentIcon />,
                         path: '/cpm_reportsEmployee'
                     },{
-                        text: 'Profil',
+                        text: 'Profile',
                         icon: <SettingsIcon />,
                         path: '/settingsEmployee'
                     }
@@ -190,6 +190,7 @@ const DashboardEmployee = () => {
                                 variant="h5"
                                 sx={{
                                     mb: 3,
+                                    mt:-8,
                                     display: 'flex',
                                     alignItems: 'center',
                                     color: '#0055A8',
@@ -203,6 +204,7 @@ const DashboardEmployee = () => {
                             </Typography>
                             <Divider
                                 sx={{
+                                    mt:-2,
                                     mb: 2
                                 }} />
                             <Grid container spacing={3}>
@@ -214,7 +216,7 @@ const DashboardEmployee = () => {
                                             color: 'white'
                                         }}>
                                         <CardContent>
-                                            <Typography variant="h6">Total Lines</Typography>
+                                            <Typography variant="h6">Total Line</Typography>
                                             <Typography variant="h4">2</Typography>
                                         </CardContent>
                                     </Card>
@@ -228,7 +230,7 @@ const DashboardEmployee = () => {
                                             color: 'white'
                                         }}>
                                         <CardContent>
-                                            <Typography variant="h6">Total Kategori</Typography>
+                                            <Typography variant="h6">Total Categories</Typography>
                                             <Typography variant="h4">2</Typography>
                                         </CardContent>
                                     </Card>
@@ -242,7 +244,7 @@ const DashboardEmployee = () => {
                                             color: 'white'
                                         }}>
                                         <CardContent>
-                                            <Typography variant="h6">Total Mesin</Typography>
+                                            <Typography variant="h6">Total Machine</Typography>
                                             <Typography variant="h4">5</Typography>
                                         </CardContent>
                                     </Card>
