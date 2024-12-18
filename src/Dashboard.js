@@ -155,7 +155,7 @@ const Dashboard = () => {
                                 icon: <AlignHorizontalRightIcon/>,
                                 path: '/line_management'
                             }, {
-                                text: 'Categories Management',
+                                text: 'Process Management',
                                 icon: <CategoryIcon/>,
                                 path: '/categories_management'
                             }, {

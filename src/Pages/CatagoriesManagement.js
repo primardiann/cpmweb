@@ -41,7 +41,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const CategoriesManagement = () => {
     const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [newCategory, setNewCategory] = useState({ nama_kategori: '' });
@@ -58,7 +58,7 @@ const CategoriesManagement = () => {
             setCategories(response.data);
             setLoading(false);
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            console.error('Error fetching process:', error);
             setLoading(false);
         }
     };
@@ -109,7 +109,7 @@ const CategoriesManagement = () => {
                 'http://localhost:5000/api/kategori',
                 newCategory
             );
-            alert('Category added successfully');
+            alert('Process added successfully');
             fetchCategories();
             handleDialogClose();
         } catch (error) {
@@ -128,7 +128,7 @@ const CategoriesManagement = () => {
                 `http://localhost:5000/api/kategori/${editingCategory.kategori_id}`,
                 newCategory
             );
-            alert('Category updated successfully');
+            alert('Process updated successfully');
             fetchCategories();
             handleDialogClose();
         } catch (error) {
@@ -141,7 +141,7 @@ const CategoriesManagement = () => {
             await axios.delete(
                 `http://localhost:5000/api/kategori/${kategori_id}`
             );
-            alert('Category deleted successfully');
+            alert('Process deleted successfully');
             fetchCategories();
         } catch (error) {
             console.error('Error deleting category:', error);
@@ -162,7 +162,7 @@ const CategoriesManagement = () => {
                     }}
                 >
                     <AlignHorizontalRightIcon sx={{ mr: 1 }} />
-                    Categories Management
+                    Process Management
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
 
@@ -190,7 +190,7 @@ const CategoriesManagement = () => {
                         }}
                         onClick={() => handleDialogOpen()}
                     >
-                        + New Category
+                        + New Process
                     </Button>
                 </Box>
 
@@ -199,7 +199,7 @@ const CategoriesManagement = () => {
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
-                                <StyledTableCell>Category Name</StyledTableCell>
+                                <StyledTableCell>Process Name</StyledTableCell>
                                 <StyledTableCell>Action</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -213,7 +213,7 @@ const CategoriesManagement = () => {
                             ) : filteredCategories.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={3} align="center">
-                                        No Categories found
+                                        No Process found
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -272,12 +272,12 @@ const CategoriesManagement = () => {
                     },
                     }}>
                 <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>
-                    {editingCategory ? 'Edit Category' : 'Add New Category'}
+                    {editingCategory ? 'Edit Process' : 'Add New Process'}
                 </DialogTitle>
                 <DialogContent>
                     <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                            Categories :
+                            Process :
                         </Typography>
                         <TextField
                         fullWidth

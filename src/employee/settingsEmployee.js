@@ -78,7 +78,7 @@ const SettingsEmployee = () => {
                     }}
                 >
                     <SettingsIcon sx={{ mr: 1 }} />
-                    Profil
+                    Profile
                 </Typography>
 
                 <Divider sx={{ mb: 2 }} />

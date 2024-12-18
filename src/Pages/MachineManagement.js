@@ -54,7 +54,7 @@ const MachineManagement = () => {
     const [lines, setLines] = useState([]);
     const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [newMachine, setNewMachine] = useState({ nama_mesin: '', kode_mesin: '', kode_line: '', nama_kategori: '' });
@@ -234,7 +234,7 @@ const MachineManagement = () => {
                                 <StyledTableCell>Machine Name</StyledTableCell>
                                 <StyledTableCell>Machine Code</StyledTableCell>
                                 <StyledTableCell>Line</StyledTableCell>
-                                <StyledTableCell>Category</StyledTableCell>
+                                <StyledTableCell>Process</StyledTableCell>
                                 <StyledTableCell>Action</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -366,7 +366,7 @@ const MachineManagement = () => {
                   {/* Category */}
                   <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
                       <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                           Category:
+                           Process:
                       </Typography>
                       <Select
                       margin="dense"

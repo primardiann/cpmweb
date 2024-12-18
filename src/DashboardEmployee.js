@@ -130,7 +130,7 @@ const DashboardEmployee = () => {
                         icon: <AssignmentIcon />,
                         path: '/cpm_reportsEmployee'
                     },{
-                        text: 'Profil',
+                        text: 'Profile',
                         icon: <SettingsIcon />,
                         path: '/settingsEmployee'
                     }

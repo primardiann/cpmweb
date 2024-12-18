@@ -52,7 +52,7 @@ const PartSpecification = () => {
     const [specifications, setSpecifications] = useState([]);
     const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [newSpecification, setNewSpecification] = useState({
