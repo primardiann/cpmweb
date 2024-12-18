@@ -34,6 +34,7 @@ const DashboardEmployee = () => {
     const [animationKey, setAnimationKey] = useState(0);
     const navigate = useNavigate();
 
+
     const handleLogout = () => {
         localStorage.removeItem("username");
         localStorage.removeItem("isLoggedIn");

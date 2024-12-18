@@ -24,7 +24,7 @@ import {
   DialogContent,
   DialogActions
 } from '@mui/material';
-import { FormControlLabel, Checkbox } from '@mui/material';
+import { FormControlLabel } from '@mui/material';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SearchIcon from '@mui/icons-material/Search';

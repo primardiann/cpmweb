@@ -8,21 +8,38 @@ import {
     Paper
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Untuk request API
 import backgroundImage from './Picture/gambar1.jpg';
 
 function Login() {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState(''); // Diganti ke email
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (username === 'Admin' && password === '123') {
-            localStorage.setItem('username', username);
-            navigate('/Dashboard');
-        } else {
-            setError('Invalid username or password');
+        try {
+            // Kirim request login ke backend
+            const response = await axios.post('http://localhost:5000/api/login', {
+                email,
+                kata_sandi: password,
+            });
+
+            // Simpan token dan data user ke localStorage
+            const { token, user } = response.data;
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
+
+            // Redirect berdasarkan role
+            if (user.role === 'admin') {
+                navigate('/Dashboard'); // Halaman admin
+            } else if (user.role === 'employee') {
+                navigate('/EmployeeDashboard'); // Halaman employee
+            }
+        } catch (err) {
+            // Tangani error dari API
+            setError(err.response?.data?.message || 'Login failed');
         }
     };
 
@@ -87,11 +104,11 @@ function Login() {
                         margin="normal"
                         required
                         fullWidth
-                        name="username"
-                        autoComplete="username"
+                        name="email"
+                        autoComplete="email"
                         autoFocus
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         sx={{
                             mb: 3,
                             '& .MuiOutlinedInput-root': {
