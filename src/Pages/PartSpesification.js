@@ -47,13 +47,13 @@ const ResponsiveButtonContainer = styled(Box)(({ theme }) => ({
     flexWrap: 'wrap',
 }));
 
-
 const PartSpecification = () => {
     const [specifications, setSpecifications] = useState([]);
     const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState('');
     const [loading, setLoading] = useState(true);
     const [newSpecification, setNewSpecification] = useState({
         kategori_id: '',
@@ -94,9 +94,11 @@ const PartSpecification = () => {
         setPage(0);
     };
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
+    const handleCategoryFilterChange = (event) => setCategoryFilter(event.target.value);
 
     const filteredSpecifications = specifications.filter((specification) =>
-        specification.nama_spesifikasi.toLowerCase().includes(searchTerm.toLowerCase())
+        specification.nama_spesifikasi.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (categoryFilter === '' || specification.kategori_id === categoryFilter)
     );
 
     const handleDialogOpen = (specification = null) => {
@@ -174,7 +176,7 @@ const PartSpecification = () => {
 
     return (
         <Box sx={{ p: 1 }}>
-            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3, mt:-8 }}>
+            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3, mt: -8 }}>
                 <Typography
                     variant="h5"
                     sx={{
@@ -190,14 +192,8 @@ const PartSpecification = () => {
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        mb: 2,
-                        alignItems: 'center',
-                    }}
-                >
+                {/* Filters */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <SearchIcon sx={{ mr: 1 }} />
                         <TextField
@@ -208,13 +204,33 @@ const PartSpecification = () => {
                             onChange={handleSearchChange}
                         />
                     </Box>
-                    <Button
-                        variant="contained"
-                        sx={{ bgcolor: '#005DB8', color: 'white' }}
-                        onClick={() => handleDialogOpen()}
-                    >
-                        + New Spesification
-                    </Button>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Select
+                            value={categoryFilter}
+                            onChange={handleCategoryFilterChange}
+                            displayEmpty
+                            variant="outlined"
+                            size="small"
+                            sx={{ mr: 2 }}
+                        >
+                            <MenuItem value="">
+                                <em>All Process</em>
+                            </MenuItem>
+                            {categories.map((category) => (
+                                <MenuItem key={category.kategori_id} value={category.kategori_id}>
+                                    {category.nama_kategori}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <Button
+                            variant="contained"
+                            sx={{ bgcolor: '#005DB8', color: 'white' }}
+                            onClick={() => handleDialogOpen()}
+                        >
+                            + New Specification
+                        </Button>
+                    </Box>
                 </Box>
 
                 <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
@@ -223,7 +239,7 @@ const PartSpecification = () => {
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
                                 <StyledTableCell>Specification Name</StyledTableCell>
-                                <StyledTableCell>Category</StyledTableCell>
+                                <StyledTableCell>Process</StyledTableCell>
                                 <StyledTableCell>Model Running</StyledTableCell>
                                 <StyledTableCell>Action</StyledTableCell>
                             </TableRow>
@@ -263,9 +279,7 @@ const PartSpecification = () => {
                                                         }}
                                                         startIcon={<EditIcon />}
                                                         onClick={() => handleDialogOpen(specification)}
-                                                    >
-                                                        
-                                                    </Button>
+                                                    />
                                                     <Button
                                                         variant="contained"
                                                         sx={{
@@ -275,9 +289,7 @@ const PartSpecification = () => {
                                                         }}
                                                         startIcon={<DeleteIcon />}
                                                         onClick={() => deleteSpecification(specification.spesifikasi_id)}
-                                                    >
-                                                        
-                                                    </Button>
+                                                    />
                                                 </ResponsiveButtonContainer>
                                             </StyledTableCell>
                                         </TableRow>
@@ -288,7 +300,7 @@ const PartSpecification = () => {
                 </TableContainer>
 
                 <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[10, 25, 50]}
                     component="div"
                     count={filteredSpecifications.length}
                     rowsPerPage={rowsPerPage}
@@ -299,86 +311,92 @@ const PartSpecification = () => {
             </Paper>
 
             {/* Dialog for Add/Edit */}
-            <Dialog open={openDialog} onClose={handleDialogClose}
+<Dialog open={openDialog} onClose={handleDialogClose} fullWidth maxWidth="sm"
+    sx={{
+        '& .MuiDialog-paper': {
+            width: '550px',
+            height: '460px',
+            maxWidth: 'none',
+        },
+    }}
+>
+    <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold' }}>
+        {editingSpecification ? 'Edit Specification' : 'Add New Specification'}
+    </DialogTitle>
+    <DialogContent>
+        {/* Specification Name */}
+        <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                Specification Name:
+            </Typography>
+            <TextField
+                margin="dense"
+                fullWidth
+                value={newSpecification.nama_spesifikasi || ''}
+                onChange={handleInputChange}
+                name="nama_spesifikasi"
+            />
+        </Box>
+        {/* Category */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                Category:
+            </Typography>
+            <Select
+                margin="dense"
+                fullWidth
+                name="kategori_id"
+                value={newSpecification.kategori_id || ''}
+                onChange={handleInputChange}
+            >
+                {categories.map((category) => (
+                    <MenuItem key={category.kategori_id} value={category.kategori_id}>
+                        {category.nama_kategori}
+                    </MenuItem>
+                ))}
+            </Select>
+        </Box>
+        {/* Standard Value */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                Standard Value:
+            </Typography>
+            <TextField
+                margin="dense"
+                fullWidth
+                value={newSpecification.nilai_standar || ''}
+                onChange={handleInputChange}
+                name="nilai_standar"
+            />
+        </Box>
+    </DialogContent>
+    <DialogActions>
+        <Button
+            variant="contained"
+            onClick={handleDialogClose}
             sx={{
-                '& .MuiDialog-paper': {
-                    width: '550px',    
-                    height: '380px',    
-                    maxWidth: 'none',   
-                    },
-                    }}>
-                <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>{editingSpecification ? 'Edit Specification' : 'Add New Specification'}</DialogTitle>
-                <DialogContent>
-                    {/*Spesification Name*/}
-                    <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                            Spesification Name:
-                        </Typography>
-                        <TextField
-                        margin="dense"
-                        fullWidth
-                        value={newSpecification.nama_spesifikasi || ''}
-                        onChange={handleInputChange}
-                        name="nama_spesifikasi"
-                        />
-                    </Box>
-                    {/*Standard Value*/}
-                    <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                            Standard Value:
-                        </Typography>
-                        <TextField
-                        margin="dense"
-                        fullWidth
-                        value={newSpecification.nilai_standar || ''}
-                        onChange={handleInputChange}
-                        name="nilai_standar"
-                        />
-                    </Box>
-                    {/* Category */}
-                  <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                           Category:
-                      </Typography>
-                      <Select
-                      margin="dense"
-                      fullWidth
-                      name="kategori_id"
-                      value={newSpecification.kategori_id}
-                      onChange={handleInputChange}
-                      >
-                      {categories.map((category) => (
-                            <MenuItem key={category.kategori_id} value={category.kategori_id}>
-                                {category.nama_kategori}
-                            </MenuItem>
-                            ))}
-                      </Select>
-                  </Box>  
-                </DialogContent>
-                <DialogActions>
-                <Button variant="contained" onClick={handleDialogClose}
-                        sx={{
-                            bgcolor: '#7F7F7F',
-                            color: 'white',
-                            '&:hover' : {
-                            bgcolor: '#7F7F7F'
-                            },
-                            width: '100px',
-                            }}>
-                            Cancel
-                    </Button>
-                    <Button
-                        onClick={editingSpecification? updateSpecification : addSpecification}
-                        sx={{
-                            bgcolor: '#0055A8',
-                            color: 'white',
-                        }}
-                    >
-                        {editingSpecification? 'Save Changes' : 'Add Spesification'}
-                    </Button>
-                    
-                </DialogActions>
-            </Dialog>
+                bgcolor: '#7F7F7F',
+                color: 'white',
+                '&:hover': {
+                    bgcolor: '#7F7F7F',
+                },
+                width: '100px',
+            }}
+        >
+            Cancel
+        </Button>
+        <Button
+            onClick={editingSpecification ? updateSpecification : addSpecification}
+            sx={{
+                bgcolor: '#0055A8',
+                color: 'white',
+            }}
+        >
+            {editingSpecification ? 'Save Changes' : 'Add Specification'}
+        </Button>
+    </DialogActions>
+</Dialog>
+
         </Box>
     );
 };

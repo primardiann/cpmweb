@@ -194,7 +194,7 @@ const MachineManagement = () => {
                     }}
                 >
                     <AlignHorizontalRightIcon sx={{ mr: 1 }} />
-                    Machine Management
+                    Machines Management
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
 

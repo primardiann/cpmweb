@@ -105,7 +105,7 @@ const LineManagement = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/line', newLine);
+            await axios.post('http://localhost:5000/api/line', newLine);
             alert('Line added successfully');
             fetchLines();
             handleDialogClose();
@@ -121,10 +121,7 @@ const LineManagement = () => {
         }
 
         try {
-            const response = await axios.put(
-                `http://localhost:5000/api/line/${editingLine.line_id}`,
-                newLine
-            );
+            await axios.put(`http://localhost:5000/api/line/${editingLine.line_id}`, newLine);
             alert('Line updated successfully');
             fetchLines();
             handleDialogClose();
@@ -135,7 +132,7 @@ const LineManagement = () => {
 
     const deleteLine = async (line_id) => {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/line/${line_id}`);
+            await axios.delete(`http://localhost:5000/api/line/${line_id}`);
             alert('Line deleted successfully');
             fetchLines();
         } catch (error) {
@@ -144,8 +141,8 @@ const LineManagement = () => {
     };
 
     return (
-        <Box sx={{ p: 1 }}>
-            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3, mt:-8 }}>
+        <Box sx={{ p: 2 }}>
+            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3 }}>
                 <Typography
                     variant="h5"
                     sx={{
@@ -222,27 +219,31 @@ const LineManagement = () => {
                                             <StyledTableCell>{line.kode_line}</StyledTableCell>
                                             <StyledTableCell>{line.lokasi}</StyledTableCell>
                                             <StyledTableCell>
-                                                <Button
-                                                    variant="contained"
-                                                    sx={{
-                                                        bgcolor: '#FF9707',
-                                                        color: 'white',
-                                                        borderRadius: '8px',
-                                                    }}
-                                                    startIcon={<EditIcon />}
-                                                    onClick={() => handleDialogOpen(line)}
-                                                />
-                                                <Button
-                                                    variant="contained"
-                                                    sx={{
-                                                        bgcolor: '#FF1707',
-                                                        color: 'white',
-                                                        borderRadius: '8px',
-                                                        ml: 1,
-                                                    }}
-                                                    startIcon={<DeleteIcon />}
-                                                    onClick={() => deleteLine(line.line_id)}
-                                                />
+                                                <Box sx={{ display: 'flex', gap: 1 }}>
+                                                    <Button
+                                                        variant="contained"
+                                                        sx={{
+                                                            bgcolor: '#FF9707',
+                                                            color: 'white',
+                                                            borderRadius: '8px',
+                                                        }}
+                                                        startIcon={<EditIcon />}
+                                                        onClick={() => handleDialogOpen(line)}
+                                                    >
+                                                    
+                                                    </Button>
+                                                    <Button
+                                                        variant="contained"
+                                                        sx={{
+                                                            bgcolor: '#FF1707',
+                                                            color: 'white',
+                                                            borderRadius: '8px',
+                                                        }}
+                                                        startIcon={<DeleteIcon />}
+                                                        onClick={() => deleteLine(line.line_id)}
+                                                    >
+                                                    </Button>
+                                                </Box>
                                             </StyledTableCell>
                                         </TableRow>
                                     ))
@@ -262,51 +263,55 @@ const LineManagement = () => {
                 />
             </Paper>
 
+            {/* Dialog for Add/Edit */}
             <Dialog open={openDialog} onClose={handleDialogClose} sx={{
                 '& .MuiDialog-paper': {
-                    width: '550px',    
-                    height: '320px',    
-                    maxWidth: 'none',   
-                    },
-                    }}>
-                <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>{editingLine ? 'Edit Line' : 'Add New Line'}</DialogTitle>
+                    width: '550px',
+                    height: '320px',
+                    maxWidth: 'none',
+                },
+            }}>
+                <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold' }}>
+                    {editingLine ? 'Edit Line' : 'Add New Line'}
+                </DialogTitle>
                 <DialogContent>
-                    {/*Line Name*/}
+                    {/* Line Name */}
                     <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
                             Line Name:
                         </Typography>
                         <TextField
-                        fullWidth
-                        value={newLine.kode_line || ''}
-                        onChange={handleInputChange}
-                        name="kode_line"
+                            fullWidth
+                            value={newLine.kode_line || ''}
+                            onChange={handleInputChange}
+                            name="kode_line"
                         />
                     </Box>
-                    {/*Location*/}
+                    {/* Location */}
                     <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
                             Location:
                         </Typography>
                         <TextField
-                        fullWidth
-                        value={newLine.lokasi || ''}
-                        onChange={handleInputChange}
-                        name="lokasi"
+                            fullWidth
+                            value={newLine.lokasi || ''}
+                            onChange={handleInputChange}
+                            name="lokasi"
                         />
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="contained" onClick={handleDialogClose}
+                    <Button
+                        variant="contained"
+                        onClick={handleDialogClose}
                         sx={{
                             bgcolor: '#7F7F7F',
                             color: 'white',
-                            '&:hover' : {
-                            bgcolor: '#7F7F7F'
-                            },
+                            '&:hover': { bgcolor: '#7F7F7F' },
                             width: '100px',
-                            }}>
-                            Cancel
+                        }}
+                    >
+                        Cancel
                     </Button>
                     <Button
                         onClick={editingLine ? updateLine : addLine}

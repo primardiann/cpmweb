@@ -151,7 +151,7 @@ const Dashboard = () => {
                                 icon: <PersonIcon/>,
                                 path: '/user_management'
                             }, {
-                                text: 'Line Management',
+                                text: 'Lines Management',
                                 icon: <AlignHorizontalRightIcon/>,
                                 path: '/line_management'
                             }, {
@@ -159,7 +159,7 @@ const Dashboard = () => {
                                 icon: <CategoryIcon/>,
                                 path: '/categories_management'
                             }, {
-                                text: 'Machine Management',
+                                text: 'Machines Management',
                                 icon: <ConstructionIcon/>,
                                 path: '/machine_management'
                             }, {
