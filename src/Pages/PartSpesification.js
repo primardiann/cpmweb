@@ -173,8 +173,8 @@ const PartSpecification = () => {
     };
 
     return (
-        <Box sx={{ p: 2 }}>
-            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3 }}>
+        <Box sx={{ p: 1 }}>
+            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3, mt:-8 }}>
                 <Typography
                     variant="h5"
                     sx={{
