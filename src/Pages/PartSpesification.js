@@ -51,7 +51,7 @@ const PartSpecification = () => {
     const [specifications, setSpecifications] = useState([]);
     const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(25);
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
     const [loading, setLoading] = useState(true);
@@ -300,7 +300,7 @@ const PartSpecification = () => {
                 </TableContainer>
 
                 <TablePagination
-                    rowsPerPageOptions={[10, 25, 50]}
+                    rowsPerPageOptions={[10, 25, 50, 75, 100]}
                     component="div"
                     count={filteredSpecifications.length}
                     rowsPerPage={rowsPerPage}
@@ -359,7 +359,7 @@ const PartSpecification = () => {
         {/* Standard Value */}
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                Standard Value:
+                Model Running:
             </Typography>
             <TextField
                 margin="dense"

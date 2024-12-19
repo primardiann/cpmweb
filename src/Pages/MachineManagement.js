@@ -54,7 +54,7 @@ const MachineManagement = () => {
     const [lines, setLines] = useState([]);
     const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(25);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [newMachine, setNewMachine] = useState({ nama_mesin: '', kode_mesin: '', kode_line: '', nama_kategori: '' });
@@ -297,7 +297,7 @@ const MachineManagement = () => {
                 </TableContainer>
 
                 <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[10, 25, 50, 75, 100]}
                     component="div"
                     count={filteredMachines.length}
                     rowsPerPage={rowsPerPage}
