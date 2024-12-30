@@ -132,7 +132,7 @@ const ChangePartManagementReports = () => {
 
   return (
     <Box sx={{ p: 1 }}>
-      <Paper elevation={3} sx={{ borderRadius: '8px', p: 3, mt:-8 }}>
+      <Paper elevation={3} sx={{ borderRadius: '8px', p: 3, mt: 5, ml: 2}}>
         <Typography
           variant="h5"
           sx={{

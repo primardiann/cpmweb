@@ -16,7 +16,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import EditIcon from '@mui/icons-material/Edit';
 
 const SettingsEmployee = () => {
-    const userId = 9; // ID pengguna yang ingin diedit
+    const userId = 36; // ID pengguna yang ingin diedit
     const [name, setName] = useState('');
     const [mobileNumber, setMobileNumber] = useState('');
     const [role, setRole] = useState('');
@@ -66,7 +66,7 @@ const SettingsEmployee = () => {
 
     return (
         <Box sx={{ p: 1 }}>
-            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3, mt:-8 }}>
+            <Paper elevation={3} sx={{ borderRadius: '8px', p: 3, mt: 5, ml: 2 }}>
                 <Typography
                     variant="h5"
                     sx={{
