@@ -11,8 +11,8 @@ import {
     IconButton,
     Alert
 } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import EditIcon from '@mui/icons-material/Edit';
 
 const Settings = () => {
@@ -77,7 +77,7 @@ const Settings = () => {
                         color: '#0055A8'
                     }}
                 >
-                    <SettingsIcon sx={{ mr: 1 }} />
+                    <ManageAccountsIcon sx={{ mr: 1 }} />
                     Profile
                 </Typography>
 

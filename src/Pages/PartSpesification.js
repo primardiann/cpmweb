@@ -20,7 +20,7 @@ import {
     MenuItem,
 } from '@mui/material';
 import { Select } from '@mui/material';
-import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
@@ -187,7 +187,7 @@ const PartSpecification = () => {
                         fontWeight: 'bold',
                     }}
                 >
-                    <AlignHorizontalRightIcon sx={{ mr: 1 }} />
+                    <AccountTreeIcon sx={{ mr: 1 }} />
                     Part Specification Management
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -241,6 +241,7 @@ const PartSpecification = () => {
                                 <StyledTableCell>Specification Name</StyledTableCell>
                                 <StyledTableCell>Process</StyledTableCell>
                                 <StyledTableCell>Model Running</StyledTableCell>
+                                <StyledTableCell>Qty</StyledTableCell>
                                 <StyledTableCell>Action</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -268,6 +269,7 @@ const PartSpecification = () => {
                                             <StyledTableCell>{specification.nama_spesifikasi}</StyledTableCell>
                                             <StyledTableCell>{specification.nama_kategori}</StyledTableCell>
                                             <StyledTableCell>{specification.nilai_standar}</StyledTableCell>
+                                            <StyledTableCell>{specification.nilai_standar}</StyledTableCell> {/* masimenggunakan data dummy*/}
                                             <StyledTableCell>
                                                 <ResponsiveButtonContainer>
                                                     <Button

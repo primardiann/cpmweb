@@ -18,7 +18,7 @@ import {
     DialogContent,
     DialogTitle
 } from '@mui/material';
-import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
+import CategoryIcon from '@mui/icons-material/Category';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
@@ -161,7 +161,7 @@ const CategoriesManagement = () => {
                         fontWeight: 'bold'
                     }}
                 >
-                    <AlignHorizontalRightIcon sx={{ mr: 1 }} />
+                    <CategoryIcon sx={{ mr: 1 }} />
                     Process Management
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -172,7 +172,7 @@ const CategoriesManagement = () => {
                         <TextField
                             variant="outlined"
                             size="small"
-                            placeholder="Search by category name"
+                            placeholder="Search by process name"
                             value={searchTerm}
                             onChange={handleSearchChange}
                         />

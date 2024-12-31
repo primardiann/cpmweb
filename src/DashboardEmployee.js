@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, AppBar, Toolbar, IconButton, Drawer, Typography, List, ListItem, ListItemIcon, ListItemText, Divider, Button } from '@mui/material';
-import { Menu as MenuIcon, Person as PersonIcon, Logout as LogoutIcon, Dashboard as DashboardIcon, AlignHorizontalRight as AlignHorizontalRightIcon, Category as CategoryIcon, Construction as ConstructionIcon, AccountTree as AccountTreeIcon, Assignment as AssignmentIcon, Settings as SettingsIcon } from '@mui/icons-material'; 
+import { Menu as MenuIcon, Person as PersonIcon, Logout as LogoutIcon, Dashboard as DashboardIcon, AlignHorizontalRight as AlignHorizontalRightIcon, Category as CategoryIcon, Construction as ConstructionIcon, AccountTree as AccountTreeIcon, Assignment as AssignmentIcon, Settings as SettingsIcon, ManageAccounts as ManageAccountsIcon  } from '@mui/icons-material'; 
 import { Link, Routes, Route, useNavigate, Outlet } from 'react-router-dom';  // Import Outlet
 import ContentEmployee from './Employee/contentEmployee'; 
 import CpmReports from './Employee/cpm_reportsEmployee'; 
@@ -25,8 +25,8 @@ const DashboardEmployee = () => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" sx={{ flexGrow: 1 }} />
-                    <IconButton color="action" onClick={handleLogout}>
-                        <PersonIcon />
+                    <IconButton color="action" onClick={() => navigate('settings_employee')}>
+                        <ManageAccountsIcon />
                     </IconButton>
                 </Toolbar>
             </AppBar>
@@ -58,7 +58,7 @@ const DashboardEmployee = () => {
                     {[ 
                         { text: 'Dashboard', icon: <DashboardIcon />, path: 'content_employee' },
                         { text: 'CPM Reports', icon: <AssignmentIcon />, path: 'cpm_employee' },
-                        { text: 'Profile', icon: <SettingsIcon />, path: 'settings_employee' }
+                        { text: 'Profile', icon: <ManageAccountsIcon />, path: 'settings_employee' }
                     ].map((item, index) => (
                         <ListItem button key={index} component={Link} to={item.path}>
                             <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, AppBar, Toolbar, IconButton, Drawer, Typography, List, ListItem, ListItemIcon, ListItemText, Divider, Button } from '@mui/material';
-import { Menu as MenuIcon, Person as PersonIcon, Logout as LogoutIcon, Dashboard as DashboardIcon, AlignHorizontalRight as AlignHorizontalRightIcon, Category as CategoryIcon, Construction as ConstructionIcon, AccountTree as AccountTreeIcon, Assignment as AssignmentIcon, Settings as SettingsIcon } from '@mui/icons-material'; 
+import { Menu as MenuIcon, Person as PersonIcon, Logout as LogoutIcon, Dashboard as DashboardIcon, AlignHorizontalRight as AlignHorizontalRightIcon, Category as CategoryIcon, Construction as ConstructionIcon, AccountTree as AccountTreeIcon, Assignment as AssignmentIcon, Settings as SettingsIcon, ManageAccounts as ManageAccountsIcon  } from '@mui/icons-material'; 
 import { Link, Routes, Route, useNavigate, Outlet } from 'react-router-dom';  // Import Outlet
 import DashboardContent from './Pages/DashboardContent'; 
 import UserManagement from './Pages/UserManagement'; 
@@ -30,8 +30,8 @@ const Dashboard = () => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" sx={{ flexGrow: 1 }} />
-                    <IconButton color="action" onClick={handleLogout}>
-                        <PersonIcon />
+                    <IconButton color="action" onClick={() => navigate('Settings')}>
+                        <ManageAccountsIcon  />
                     </IconButton>
                 </Toolbar>
             </AppBar>
@@ -63,12 +63,12 @@ const Dashboard = () => {
                     {[ 
                         { text: 'Dashboard', icon: <DashboardIcon />, path: 'content' },
                         { text: 'User Management', icon: <PersonIcon />, path: 'user_management' },
-                        { text: 'Lines Management', icon: <AlignHorizontalRightIcon />, path: 'line_management' },
+                        { text: 'Line Management', icon: <AlignHorizontalRightIcon />, path: 'line_management' },
                         { text: 'Process Management', icon: <CategoryIcon />, path: 'categories_management' },
                         { text: 'Machines Management', icon: <ConstructionIcon />, path: 'machine_management' },
                         { text: 'Part Specification', icon: <AccountTreeIcon />, path: 'part_specification' },
                         { text: 'CPM Reports', icon: <AssignmentIcon />, path: 'cpm_reports' },
-                        { text: 'Profile', icon: <SettingsIcon />, path: 'settings' }
+                        { text: 'Profile', icon: <ManageAccountsIcon />, path: 'settings' }
                     ].map((item, index) => (
                         <ListItem button key={index} component={Link} to={item.path}>
                             <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>

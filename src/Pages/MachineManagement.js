@@ -22,7 +22,7 @@ import {
     FormControl,
     InputLabel,
 } from '@mui/material';
-import AlignHorizontalRightIcon from '@mui/icons-material/AlignHorizontalRight';
+import ConstructionIcon from '@mui/icons-material/Construction';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
@@ -193,7 +193,7 @@ const MachineManagement = () => {
                         fontWeight: 'bold',
                     }}
                 >
-                    <AlignHorizontalRightIcon sx={{ mr: 1 }} />
+                    <ConstructionIcon sx={{ mr: 1 }} />
                     Machines Management
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
@@ -222,7 +222,7 @@ const MachineManagement = () => {
                         sx={{ bgcolor: '#005DB8', color: 'white' }}
                         onClick={() => handleDialogOpen()}
                     >
-                        + New Machine
+                        + New Machines
                     </Button>
                 </Box>
 
@@ -316,7 +316,7 @@ const MachineManagement = () => {
                     maxWidth: 'none',   
                     },
                     }}>
-                <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>{editingMachine ? 'Edit Machine' : 'Add New Machine'}</DialogTitle>
+                <DialogTitle  sx={{ textAlign: 'center', fontWeight: 'bold' }}>{editingMachine ? 'Edit Machines' : 'Add New Machines'}</DialogTitle>
                 <DialogContent>
                     {/*Line Name*/}
                     <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -402,7 +402,7 @@ const MachineManagement = () => {
                             color: 'white',
                         }}
                     >
-                        {editingMachine ? 'Save Changes' : 'Add Machine'}
+                        {editingMachine ? 'Save Changes' : 'Add Machines'}
                     </Button>
                 </DialogActions>
             </Dialog>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, TextField, Typography, Box, Container, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import backgroundImage from './Picture/gambar1.jpg';
+import backgroundImage from './Picture/gambar.jpg';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -49,7 +49,8 @@ function Login() {
       sx={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'top center',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
         height: '100vh',
         display: 'flex',
         alignItems: 'center',

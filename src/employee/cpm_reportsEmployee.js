@@ -228,11 +228,15 @@ const ChangePartManagementReportsEmployee = () => {
                              </Select>
                         </Box>
 
-                       {/* Report ID */}
-                       <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-                          <Typography variant="body1" sx={{ width: '185px',height: '30px', padding: '5px 8px'}}>Report ID:</Typography>
-                          <TextField fullWidth defaultValue="#AUTO" disabled />
-                       </Box>
+                     {/* Machine Category */}
+                     <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                         <Typography variant="body1" sx={{ width: '185px',height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Machine Category:</Typography>
+                           <Select fullWidth defaultValue="">
+                              <MenuItem value="Winding">Winding</MenuItem>
+                              <MenuItem value="Welding">Welding</MenuItem>
+                              <MenuItem value="Assembly">Assembly</MenuItem>
+                          </Select>
+                    </Box>  
 
                      {/* Machine Name/ID */}
                      <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -243,16 +247,6 @@ const ChangePartManagementReportsEmployee = () => {
                               <MenuItem value="Machine C">Machine C</MenuItem>
                           </Select>
                      </Box>
-
-                    {/* Machine Category */}
-                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-                       <Typography variant="body1" sx={{ width: '182px',height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Machine Category:</Typography>
-                         <Select fullWidth defaultValue="">
-                           <MenuItem value="Winding">Winding</MenuItem>
-                           <MenuItem value="Welding">Welding</MenuItem>
-                           <MenuItem value="Assembly">Assembly</MenuItem>
-                         </Select>
-                    </Box>
 
                      <TableContainer component={Paper} sx={{ mt: 2 }}>
                             <Table>
@@ -410,26 +404,26 @@ const ChangePartManagementReportsEmployee = () => {
     <DialogContent>
         {/* Report ID */}
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Line:</Typography>
-            <TextField fullWidth value={`#${selectedReport?.line || ''}`} />
-        </Box>
-
-        {/* Report ID */}
-        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Report ID:</Typography>
             <TextField fullWidth value={`#${selectedReport?.id || ''}`} />
         </Box>
 
-        {/* Machine Name/ID */}
+        {/* Line */}
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Machine Name/ID:</Typography>
-            <TextField fullWidth value={selectedReport?.machineName || ''} />
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Line:</Typography>
+            <TextField fullWidth value={`#${selectedReport?.line || ''}`} />
         </Box>
 
         {/* Machine Category */}
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="body1" sx={{ width: '182px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Machine Category:</Typography>
             <TextField fullWidth value={selectedReport?.category || ''} />
+        </Box>
+
+        {/* Machine Name/ID */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px', whiteSpace: 'nowrap' }}>Machine Name/ID:</Typography>
+            <TextField fullWidth value={selectedReport?.machineName || ''} />
         </Box>
 
         {/* Specifications Table */}
