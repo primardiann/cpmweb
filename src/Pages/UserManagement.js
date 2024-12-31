@@ -23,6 +23,7 @@ import {
     Select,
     MenuItem
 } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
@@ -171,7 +172,7 @@ function UserManagement() {
                     variant="h5"
                     sx={{ mb: 1, display: 'flex', alignItems: 'center', color: '#0055A8', fontWeight: 'bold' }}
                 >
-                    <AlignHorizontalRightIcon sx={{ mr: 1 }} />
+                    <PersonIcon sx={{ mr: 1 }} />
                     User Management
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
