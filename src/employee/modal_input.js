@@ -15,6 +15,8 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    Box,
+    Typography,
     Paper,
 } from '@mui/material';
 
@@ -45,7 +47,7 @@ const ModalInput = ({ open, handleClose, setReports }) => {
                 const linesData = await axios.get('http://localhost:5000/api/line');
                 const machinesData = await axios.get('http://localhost:5000/api/mesin');
                 const categoriesData = await axios.get('http://localhost:5000/api/kategori');
-                const specificationsData = await axios.get('http://localhost:5000/api/spesifikasi');
+                const specificationsData = await axios.get('http://localhost:5000/api/spesifikasi/mesin/24');
                 
                 setLines(linesData.data);
                 setMachines(machinesData.data);
@@ -122,126 +124,146 @@ const ModalInput = ({ open, handleClose, setReports }) => {
     };
 
     return (
-        <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-            <DialogTitle>Add New Report</DialogTitle>
-            <DialogContent>
-                {/* Line Select */}
-                <Select
-                    name="line_id"
-                    value={newReport.line_id}
-                    onChange={handleChange}
-                    fullWidth
-                    variant="outlined"
-                    sx={{ mb: 2 }}
-                >
-                    <MenuItem value="">
-                        <em>Select Line</em>
+        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold' }}>
+        Input CPM Reports
+    </DialogTitle>
+    <DialogContent>
+        {/* Line Select */}
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Typography sx={{ width: '120px'}}>Select Line:</Typography>
+            <Select
+                name="line_id"
+                value={newReport.line_id}
+                onChange={handleChange}
+                fullWidth
+                variant="outlined"
+            >
+                <MenuItem value="">
+                    <em>Select Line</em>
+                </MenuItem>
+                {lines.map((line) => (
+                    <MenuItem key={line.line_id} value={line.line_id}>
+                        {line.kode_line}
                     </MenuItem>
-                    {lines.map((line) => (
-                        <MenuItem key={line.line_id} value={line.line_id}>
-                            {line.kode_line}
-                        </MenuItem>
-                    ))}
-                </Select>
+                ))}
+            </Select>
+        </Box>
 
-                {/* Category Select */}
-                <Select
-                    name="kategori_id"
-                    value={newReport.kategori_id}
-                    onChange={handleChange}
-                    fullWidth
-                    variant="outlined"
-                    sx={{ mb: 2 }}
-                >
-                    <MenuItem value="">
-                        <em>Select Process</em>
+        {/* Category Select */}
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Typography sx={{ width: '120px'}}>Select Process:</Typography>
+            <Select
+                name="kategori_id"
+                value={newReport.kategori_id}
+                onChange={handleChange}
+                fullWidth
+                variant="outlined"
+            >
+                <MenuItem value="">
+                    <em>Select Process</em>
+                </MenuItem>
+                {categories.map((category) => (
+                    <MenuItem key={category.kategori_id} value={category.kategori_id}>
+                        {category.nama_kategori}
                     </MenuItem>
-                    {categories.map((category) => (
-                        <MenuItem key={category.kategori_id} value={category.kategori_id}>
-                            {category.nama_kategori}
-                        </MenuItem>
-                    ))}
-                </Select>
+                ))}
+            </Select>
+        </Box>
 
-                {/* Machine Select */}
-                <Select
-                    name="mesin_id"
-                    value={newReport.mesin_id}
-                    onChange={handleChange}
-                    fullWidth
-                    variant="outlined"
-                    sx={{ mb: 2 }}
-                >
-                    <MenuItem value="">
-                        <em>Select Machine</em>
+        {/* Machine Select */}
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Typography sx={{ width: '120px' }}>Select Machine:</Typography>
+            <Select
+                name="mesin_id"
+                value={newReport.mesin_id}
+                onChange={handleChange}
+                fullWidth
+                variant="outlined"
+            >
+                <MenuItem value="">
+                    <em>Select Machine</em>
+                </MenuItem>
+                {machines.map((machine) => (
+                    <MenuItem key={machine.mesin_id} value={machine.mesin_id}>
+                        {machine.nama_mesin}
                     </MenuItem>
-                    {machines.map((machine) => (
-                        <MenuItem key={machine.mesin_id} value={machine.mesin_id}>
-                            {machine.nama_mesin}
-                        </MenuItem>
-                    ))}
-                </Select>
-                
-                {/* Specification Select */}
-                <Select
-                    name="spesifikasi_id"
-                    value={newReport.spesifikasi_id}
-                    onChange={handleChange}
-                    fullWidth
-                    variant="outlined"
-                    sx={{ mb: 2 }}
-                >
-                    <MenuItem value="">
-                        <em>Select Specification</em>
-                    </MenuItem>
-                    {specifications.map((spec) => (
-                        <MenuItem key={spec.spesifikasi_id} value={spec.spesifikasi_id}>
-                            {spec.nama_spesifikasi}
-                        </MenuItem>
-                    ))}
-                </Select>
+                ))}
+            </Select>
+        </Box>
 
-                {/* Display Selected Specification Name and Standard Value */}
-                {selectedSpec.nama_spesifikasi && (
-                    <>
-                        <TableContainer component={Paper} sx={{ mb: 2 }}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Specification</TableCell>
-                                        <TableCell>Model Running</TableCell>
-                                        <TableCell>Actual Part</TableCell>
-                                        <TableCell>Judgment</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell>{selectedSpec.nama_spesifikasi}</TableCell>
-                                        <TableCell>{selectedSpec.nilai_standar}</TableCell>
-                                        <TableCell>
-                                            <TextField
-                                                name="actual_part"
-                                                label="Actual Part"
-                                                variant="outlined"
-                                                fullWidth
-                                                value={newReport.actual_part}
-                                                onChange={handleChange}
-                                                sx={{ mb: 2 }}
-                                            />
-                                        </TableCell>
-                                        <TableCell>{newReport.judgment}</TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </>
-                )}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose} color="primary">Cancel</Button>
-                <Button onClick={handleSubmit} color="primary">Submit</Button>
-            </DialogActions>
-        </Dialog>
+        {/* Specification Select */}
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Typography sx={{ width: '120px' }}>Select Specification:</Typography>
+            <Select
+                name="spesifikasi_id"
+                value={newReport.spesifikasi_id}
+                onChange={handleChange}
+                fullWidth
+                variant="outlined"
+            >
+                <MenuItem value="">
+                    <em>Select Specification</em>
+                </MenuItem>
+                {specifications.map((spec) => (
+                    <MenuItem key={spec.spesifikasi_id} value={spec.spesifikasi_id}>
+                        {spec.nama_spesifikasi}
+                    </MenuItem>
+                ))}
+            </Select>
+        </Box>
+
+        {/* Display Selected Specification Name and Standard Value */}
+        {selectedSpec.nama_spesifikasi && (
+            <>
+                <TableContainer component={Paper} sx={{ mb: 2 }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Specification</TableCell>
+                                <TableCell>Model Running</TableCell>
+                                <TableCell>Actual Part</TableCell>
+                                <TableCell>Judgment</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell>{selectedSpec.nama_spesifikasi}</TableCell>
+                                <TableCell>{selectedSpec.nilai_standar}</TableCell>
+                                <TableCell>
+                                    <TextField
+                                        name="actual_part"
+                                        label="Actual Part"
+                                        variant="outlined"
+                                        fullWidth
+                                        value={newReport.actual_part}
+                                        onChange={handleChange}
+                                        sx={{ mb: 2 }}
+                                    />
+                                </TableCell>
+                                <TableCell>{newReport.judgment}</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </>
+        )}
+    </DialogContent>
+
+    <DialogActions>
+    <Button onClick={handleClose}  
+      sx={{
+        bgcolor: '#7F7F7F',
+        color: 'white',
+        '&:hover' : {
+          bgcolor: '#7F7F7F'
+        },
+        width: '100px',
+      }}>Cancel</Button>
+    <Button onClick={handleSubmit} sx={{ bgcolor: '#0055A8', color: 'white' }}>Submit</Button>
+  </DialogActions>
+</Dialog>
+
     );
 };
 

@@ -15,11 +15,17 @@ import {
     TextField,
     Divider,
     Select,
+    Card,
+    Dialog,
+    DialogContent,
+    DialogActions,
+    DialogTitle,
     MenuItem,
     Modal,
     IconButton,
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import CloseIcon from '@mui/icons-material/Close';
@@ -161,7 +167,7 @@ const ChangePartManagementReports = () => {
                 </Box>
 
                 <TableContainer component={Paper} sx={{ mt: 2 }}>
-                    <Table>
+                    <Table size="small">
                         <TableHead sx={{ backgroundColor: '#EBEBEB' }}>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
@@ -199,14 +205,28 @@ const ChangePartManagementReports = () => {
                                     </StyledTableCell>
                                     <StyledTableCell>{report.created_at.slice(0, 10)}</StyledTableCell>
                                     <StyledTableCell>
-                                        <Button
-                                            variant="outlined"
-                                            color="primary"
-                                            size="small"
-                                            onClick={() => handleOpenModal(report)}
-                                        >
-                                            View
-                                        </Button>
+                                    <Card
+                        onClick={() => handleOpenModal(report)}
+                        sx={{
+                          width: '80px',
+                          height: '40px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          bgcolor: '#1B80E3',
+                          boxShadow: 1,
+                          transition: '0.3s',
+                          cursor: 'pointer',
+                          '&:hover': {
+                            transform: 'scale(1.05)'
+                           }
+                          }}>
+                            <AssessmentIcon
+                            sx={{
+                              color: 'white'
+                            }}
+                            />
+                            </Card>
                                     </StyledTableCell>
                                 </TableRow>
                             ))}
@@ -225,48 +245,67 @@ const ChangePartManagementReports = () => {
                 />
             </Paper>
 
-            {/* Modal Detail */}
-            <Modal
-                open={openModal}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
-            >
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: '60%',
-                    bgcolor: 'white',
-                    borderRadius: 2,
-                    boxShadow: 24,
-                    p: 3
-                }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                        <Typography variant="h6" id="modal-title" sx={{ fontWeight: 'bold', color: '#0055A8' }}>
-                            Detail Change Part Management Report
-                        </Typography>
-                        <IconButton onClick={handleCloseModal}>
-                            <CloseIcon />
-                        </IconButton>
-                    </Box>
-                    <Divider sx={{ mb: 2 }} />
-                    <Box>
-                        {selectedReport && (
-                            <>
-                                <Typography><strong>Machine Name:</strong> {selectedReport.nama_mesin}</Typography>
-                                <Typography><strong>Specification:</strong> {selectedReport.nama_spesifikasi}</Typography>
-                                <Typography><strong>Model Running:</strong> {selectedReport.nilai_standar}</Typography>
-                                <Typography><strong>Actual Part:</strong> {selectedReport.actual_part}</Typography>
-                                <Typography><strong>Judgment:</strong> {selectedReport.judgment}</Typography>
-                                <Typography><strong>Date:</strong> {selectedReport.created_at}</Typography>
-                                
-                            </>
-                        )}
-                    </Box>
-                </Box>
-            </Modal>
+            {/* Detail Modal CPM */}
+<Dialog open={openModal} onClose={handleCloseModal} maxWidth="md" fullWidth>
+  <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold' }}>Detail CPM Reports</DialogTitle>
+  <DialogContent>
+    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 3 }}>
+      {/* Content inside Dialog */}
+      <Box sx={{ flex: 1, minWidth: '300px' }}>
+        {/* Lines */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px' }}>Machine Name:</Typography>
+          <TextField fullWidth variant="outlined" value={selectedReport?.nama_mesin || ''} />
+        </Box>
+
+        {/* Machine Name */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Typography sx={{ width: '120px' }}>Date:</Typography>
+          <TextField fullWidth variant="outlined" value={selectedReport?.created_at || ''} />
+        </Box>
+      </Box>
+    </Box>
+    <Box sx={{ display: 'flex', alignItems: 'flex-start', mt: 2 }}>
+      {/* Specifications Table */}
+      <TableContainer component={Paper} sx={{ flexGrow: 1, mr: 2 }}>
+        <Table>
+          <TableHead sx={{ backgroundColor: '#EBEBEB' }}>
+            <TableRow>
+              <TableCell sx={{ fontSize: '16px' }}>Specification</TableCell>
+              <TableCell sx={{ fontSize: '16px' }}>Model Running</TableCell>
+              <TableCell sx={{ fontSize: '16px' }}>Actual Part</TableCell>
+              <TableCell sx={{ fontSize: '16px' }}>Judgment</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>{selectedReport?.nama_spesifikasi}</TableCell>
+              <TableCell>{selectedReport?.nilai_standar}</TableCell>
+              <TableCell>{selectedReport?.actual_part}</TableCell>
+              <TableCell sx={{
+        color: selectedReport?.judgment === 'OK' ? '#4BCE97' :
+               selectedReport?.judgment === 'NG' ? '#FF1707' :
+               '#FFCC01', 
+        fontSize: '14px',
+        fontWeight: 'bold',
+      }} >{selectedReport?.judgment}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseModal}
+      sx={{
+        bgcolor: '#f44336',
+        color: 'white',
+        '&:hover': { bgcolor: '#FF1707' },
+        width: '100px',
+      }}>Close</Button>
+  </DialogActions>
+</Dialog>
+
         </Box>
     );
 };

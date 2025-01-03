@@ -49,7 +49,7 @@ const ResponsiveButtonContainer = styled(Box)(({ theme }) => ({
 
 const PartSpecification = () => {
     const [specifications, setSpecifications] = useState([]);
-    const [categories, setCategories] = useState([]);
+    const [mesin, setMachines] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(25);
     const [searchTerm, setSearchTerm] = useState('');
@@ -65,7 +65,7 @@ const PartSpecification = () => {
 
     useEffect(() => {
         fetchSpecifications();
-        fetchCategories();
+        fetchMachines();
     }, []);
 
     const fetchSpecifications = async () => {
@@ -79,12 +79,12 @@ const PartSpecification = () => {
         }
     };
 
-    const fetchCategories = async () => {
+    const fetchMachines = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/kategori');
-            setCategories(data);
+            const { data } = await axios.get('http://localhost:5000/api/mesin');
+            setMachines(data);
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            console.error('Error fetching machines:', error);
         }
     };
 
@@ -105,13 +105,13 @@ const PartSpecification = () => {
         if (specification) {
             setEditingSpecification(specification);
             setNewSpecification({
-                kategori_id: specification.kategori_id,
+                mesin_id: specification.mesin_id,
                 nama_spesifikasi: specification.nama_spesifikasi,
                 nilai_standar: specification.nilai_standar,
             });
         } else {
             setEditingSpecification(null);
-            setNewSpecification({ kategori_id: '', nama_spesifikasi: '', nilai_standar: '' });
+            setNewSpecification({ mesin_id: '', nama_spesifikasi: '', nilai_standar: '' });
         }
         setOpenDialog(true);
     };
@@ -130,7 +130,7 @@ const PartSpecification = () => {
     };
 
     const addSpecification = async () => {
-        if (!newSpecification.kategori_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar) {
+        if (!newSpecification.mesin_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar) {
             alert('All fields are required!');
             return;
         }
@@ -146,7 +146,7 @@ const PartSpecification = () => {
     };
 
     const updateSpecification = async () => {
-        if (!newSpecification.kategori_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar) {
+        if (!newSpecification.mesin_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar) {
             alert('All fields are required!');
             return;
         }
@@ -217,9 +217,9 @@ const PartSpecification = () => {
                             <MenuItem value="">
                                 <em>All Process</em>
                             </MenuItem>
-                            {categories.map((category) => (
-                                <MenuItem key={category.kategori_id} value={category.kategori_id}>
-                                    {category.nama_kategori}
+                            {mesin.map((category) => (
+                                <MenuItem key={mesin.mesn_id} value={mesin.mesin_id}>
+                                    {mesin.nama_mesin}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -238,10 +238,10 @@ const PartSpecification = () => {
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
+                                <StyledTableCell>Machine</StyledTableCell>
                                 <StyledTableCell>Specification Name</StyledTableCell>
-                                <StyledTableCell>Process</StyledTableCell>
                                 <StyledTableCell>Model Running</StyledTableCell>
-                                <StyledTableCell>Qty</StyledTableCell>
+                                <StyledTableCell>Stock</StyledTableCell>
                                 <StyledTableCell>Action</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -266,10 +266,10 @@ const PartSpecification = () => {
                                             <StyledTableCell>
                                                 {index + 1 + page * rowsPerPage}
                                             </StyledTableCell>
+                                            <StyledTableCell>{specification.nama_mesin}</StyledTableCell>
                                             <StyledTableCell>{specification.nama_spesifikasi}</StyledTableCell>
-                                            <StyledTableCell>{specification.nama_kategori}</StyledTableCell>
                                             <StyledTableCell>{specification.nilai_standar}</StyledTableCell>
-                                            <StyledTableCell>{specification.nilai_standar}</StyledTableCell> {/* masimenggunakan data dummy*/}
+                                            <StyledTableCell>{specification.stok}</StyledTableCell> {/* masimenggunakan data dummy*/}
                                             <StyledTableCell>
                                                 <ResponsiveButtonContainer>
                                                     <Button
@@ -347,13 +347,13 @@ const PartSpecification = () => {
             <Select
                 margin="dense"
                 fullWidth
-                name="kategori_id"
-                value={newSpecification.kategori_id || ''}
+                name="mesin_id"
+                value={newSpecification.mesin_id || ''}
                 onChange={handleInputChange}
             >
-                {categories.map((category) => (
-                    <MenuItem key={category.kategori_id} value={category.kategori_id}>
-                        {category.nama_kategori}
+                {mesin.map((mesin) => (
+                    <MenuItem key={mesin.mesin_id} value={mesin.mesin_id}>
+                        {mesin.nama_mesin}
                     </MenuItem>
                 ))}
             </Select>
