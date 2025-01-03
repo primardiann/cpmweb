@@ -16,14 +16,11 @@ import {
     Divider,
     Select,
     MenuItem,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
+import ModalInput from './modal_input';  // Pastikan path import sudah benar
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.MuiTableCell-head`]: {
@@ -40,15 +37,13 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const ChangePartManagementReportsEmployee = () => {
     const [reports, setReports] = useState([]);
-    const [categories, setCategories] = useState([]); // state untuk kategori
+    const [categories, setCategories] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(25);
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');
-    const [open, setOpen] = useState(false);
-    const [openDetailModal, setOpenDetailModal] = useState(false);
-    const [selectedReport, setSelectedReport] = useState(null);
+    const [open, setOpen] = useState(false); // Untuk membuka modal
 
     // Ambil data CPM
     useEffect(() => {
@@ -74,16 +69,6 @@ const ChangePartManagementReportsEmployee = () => {
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
-    const handleOpenDetailModal = (report) => {
-        setSelectedReport(report);
-        setOpenDetailModal(true);
-    };
-
-    const handleCloseDetailModal = () => {
-        setOpenDetailModal(false);
-        setSelectedReport(null);
-    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -154,7 +139,7 @@ const ChangePartManagementReportsEmployee = () => {
                             sx={{ mr: 2 }}
                         >
                             <MenuItem value="">
-                                <em>All Categories</em>
+                                <em>All Process</em>
                             </MenuItem>
                             {categories.map((category) => (
                                 <MenuItem key={category.id} value={category.nama_kategori}>
@@ -174,7 +159,7 @@ const ChangePartManagementReportsEmployee = () => {
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
                                 <StyledTableCell>Lines</StyledTableCell>
-                                <StyledTableCell>Machine Category</StyledTableCell>
+                                <StyledTableCell>Process</StyledTableCell>
                                 <StyledTableCell>Machine Name</StyledTableCell>
                                 <StyledTableCell>Specification</StyledTableCell>
                                 <StyledTableCell>Nilai Standard</StyledTableCell>
@@ -199,7 +184,7 @@ const ChangePartManagementReportsEmployee = () => {
                                                 color: report.judgment === 'OK' ? '#4BCE97' :
                                                     report.judgment === 'NG' ? '#FF1707' :
                                                         '#FFCC01', fontSize: '14px'
-                                            }}>
+                                            }} >
                                             {report.judgment}
                                         </Typography>
                                     </StyledTableCell>
@@ -220,6 +205,9 @@ const ChangePartManagementReportsEmployee = () => {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
+
+            {/* Modal untuk input data laporan */}
+            <ModalInput open={open} handleClose={handleClose} setReports={setReports} />
         </Box>
     );
 };
