@@ -169,29 +169,31 @@ const ChangePartManagementReportsEmployee = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {filteredReports.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((report, index) => (
-                                <TableRow key={report.id}>
-                                    <StyledTableCell>{report.id}</StyledTableCell>
-                                    <StyledTableCell>{report.kode_line}</StyledTableCell>
-                                    <StyledTableCell>{report.nama_kategori}</StyledTableCell>
-                                    <StyledTableCell>{report.nama_mesin}</StyledTableCell>
-                                    <StyledTableCell>{report.nama_spesifikasi}</StyledTableCell>
-                                    <StyledTableCell>{report.nilai_standar}</StyledTableCell>
-                                    <StyledTableCell>{report.actual_part}</StyledTableCell>
-                                    <StyledTableCell>
-                                        <Typography
-                                            sx={{
-                                                color: report.judgment === 'OK' ? '#4BCE97' :
-                                                    report.judgment === 'NG' ? '#FF1707' :
-                                                        '#FFCC01', fontSize: '14px'
-                                            }} >
-                                            {report.judgment}
-                                        </Typography>
-                                    </StyledTableCell>
-                                    <StyledTableCell>{report.created_at.slice(0, 10)}</StyledTableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
+    {filteredReports.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((report, index) => (
+        <TableRow key={report.id}>
+            {/* Menambahkan nomor urut berdasarkan halaman dan rowsPerPage */}
+            <StyledTableCell>{page * rowsPerPage + index + 1}</StyledTableCell>
+            <StyledTableCell>{report.kode_line}</StyledTableCell>
+            <StyledTableCell>{report.nama_kategori}</StyledTableCell>
+            <StyledTableCell>{report.nama_mesin}</StyledTableCell>
+            <StyledTableCell>{report.nama_spesifikasi}</StyledTableCell>
+            <StyledTableCell>{report.nilai_standar}</StyledTableCell>
+            <StyledTableCell>{report.actual_part}</StyledTableCell>
+            <StyledTableCell>
+                <Typography
+                    sx={{
+                        color: report.judgment === 'OK' ? '#4BCE97' :
+                            report.judgment === 'NG' ? '#FF1707' :
+                                '#FFCC01', fontSize: '14px'
+                    }} >
+                    {report.judgment}
+                </Typography>
+            </StyledTableCell>
+            <StyledTableCell>{report.created_at.slice(0, 10)}</StyledTableCell>
+        </TableRow>
+    ))}
+</TableBody>
+
                     </Table>
                 </TableContainer>
 
