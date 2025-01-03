@@ -342,7 +342,7 @@ const PartSpecification = () => {
         {/* Category */}
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                Category:
+                Process:
             </Typography>
             <Select
                 margin="dense"
