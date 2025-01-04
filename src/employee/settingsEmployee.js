@@ -16,10 +16,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import EditIcon from '@mui/icons-material/Edit';
 
 const SettingsEmployee = () => {
-    const userId = 42; // ID pengguna yang ingin diedit
+    const userId = 45; // ID pengguna yang ingin diedit
     const [name, setName] = useState('');
     const [mobileNumber, setMobileNumber] = useState('');
-    const [role, setRole] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState(''); // State untuk pesan
@@ -32,7 +31,6 @@ const SettingsEmployee = () => {
                 const user = response.data;
                 setName(user.nama);
                 setMobileNumber(user.no_hp);
-                setRole(user.role);
                 setEmail(user.email);
                 setPassword(user.kata_sandi);
             } catch (error) {
@@ -49,7 +47,6 @@ const SettingsEmployee = () => {
         const updatedUser = {
             nama: name,
             no_hp: mobileNumber,
-            role: role,
             email: email,
             kata_sandi: password,
         };
@@ -121,21 +118,6 @@ const SettingsEmployee = () => {
                                         fullWidth
                                         value={mobileNumber}
                                         onChange={(e) => setMobileNumber(e.target.value)}
-                                        sx={{ borderRadius: '5px' }}
-                                    />
-                                    <IconButton>
-                                        <EditIcon />
-                                    </IconButton>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                    <TextField
-                                        label="Role"
-                                        variant="outlined"
-                                        fullWidth
-                                        value={role}
-                                        onChange={(e) => setRole(e.target.value)}
                                         sx={{ borderRadius: '5px' }}
                                     />
                                     <IconButton>
