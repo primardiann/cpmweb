@@ -198,7 +198,7 @@ const ChangePartManagementReportsEmployee = () => {
                 </TableContainer>
 
                 <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[25, 50 ,75, 100]}
                     component="div"
                     count={filteredReports.length}
                     rowsPerPage={rowsPerPage}

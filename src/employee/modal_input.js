@@ -47,7 +47,7 @@ const ModalInput = ({ open, handleClose, setReports }) => {
                 const linesData = await axios.get('http://localhost:5000/api/line');
                 const machinesData = await axios.get('http://localhost:5000/api/mesin');
                 const categoriesData = await axios.get('http://localhost:5000/api/kategori');
-                const specificationsData = await axios.get('http://localhost:5000/api/spesifikasi/mesin/24');
+                const specificationsData = await axios.get('http://localhost:5000/api/spesifikasi/mesin/37');
                 
                 setLines(linesData.data);
                 setMachines(machinesData.data);

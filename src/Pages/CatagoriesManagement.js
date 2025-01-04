@@ -303,7 +303,7 @@ const CategoriesManagement = () => {
                         onClick={editingCategory ? updateCategory : addCategory}
                         sx={{ bgcolor: '#0055A8', color: 'white' }}
                     >
-                        {editingCategory ? 'Save Changes' : 'Add Category'}
+                        {editingCategory ? 'Save Changes' : 'Add Process'}
                     </Button>
                 </DialogActions>
             </Dialog>

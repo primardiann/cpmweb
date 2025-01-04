@@ -56,9 +56,10 @@ const PartSpecification = () => {
     const [categoryFilter, setCategoryFilter] = useState('');
     const [loading, setLoading] = useState(true);
     const [newSpecification, setNewSpecification] = useState({
-        kategori_id: '',
+        mesin_id: '',
         nama_spesifikasi: '',
         nilai_standar: '',
+        stok: '',
     });
     const [editingSpecification, setEditingSpecification] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
@@ -95,10 +96,12 @@ const PartSpecification = () => {
     };
     const handleSearchChange = (event) => setSearchTerm(event.target.value);
     const handleCategoryFilterChange = (event) => setCategoryFilter(event.target.value);
-
+    
+    // Filter berdasarkan pencarian nama spesifikasi atau nama mesin
     const filteredSpecifications = specifications.filter((specification) =>
-        specification.nama_spesifikasi.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (categoryFilter === '' || specification.kategori_id === categoryFilter)
+    (specification.nama_spesifikasi.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    specification.nama_mesin.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    (categoryFilter === '' || specification.kategori_id === categoryFilter)  // Filter berdasarkan kategori
     );
 
     const handleDialogOpen = (specification = null) => {
@@ -108,6 +111,7 @@ const PartSpecification = () => {
                 mesin_id: specification.mesin_id,
                 nama_spesifikasi: specification.nama_spesifikasi,
                 nilai_standar: specification.nilai_standar,
+                stok: specification.stok,
             });
         } else {
             setEditingSpecification(null);
@@ -130,11 +134,17 @@ const PartSpecification = () => {
     };
 
     const addSpecification = async () => {
-        if (!newSpecification.mesin_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar) {
+        if (!newSpecification.mesin_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar || !newSpecification.stok) {
             alert('All fields are required!');
             return;
         }
-
+    
+        // Validasi stok
+        if (isNaN(newSpecification.stok) || newSpecification.stok < 0) {
+            alert('Stock must be a valid number');
+            return;
+        }
+    
         try {
             await axios.post('http://localhost:5000/api/spesifikasi', newSpecification);
             alert('Specification added successfully');
@@ -144,13 +154,20 @@ const PartSpecification = () => {
             console.error('Error adding specification:', error);
         }
     };
+    
 
     const updateSpecification = async () => {
-        if (!newSpecification.mesin_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar) {
+        if (!newSpecification.mesin_id || !newSpecification.nama_spesifikasi || !newSpecification.nilai_standar || !newSpecification.stok) {
             alert('All fields are required!');
             return;
         }
-
+    
+        // Validasi stok
+        if (isNaN(newSpecification.stok) || newSpecification.stok < 0) {
+            alert('Stock must be a valid number');
+            return;
+        }
+    
         try {
             await axios.put(
                 `http://localhost:5000/api/spesifikasi/${editingSpecification.spesifikasi_id}`,
@@ -163,6 +180,7 @@ const PartSpecification = () => {
             console.error('Error updating specification:', error);
         }
     };
+    
 
     const deleteSpecification = async (spesifikasi_id) => {
         try {
@@ -199,30 +217,13 @@ const PartSpecification = () => {
                         <TextField
                             variant="outlined"
                             size="small"
-                            placeholder="Search by specification name"
+                            placeholder="Search by specification name or Machine Name"
                             value={searchTerm}
                             onChange={handleSearchChange}
                         />
                     </Box>
 
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Select
-                            value={categoryFilter}
-                            onChange={handleCategoryFilterChange}
-                            displayEmpty
-                            variant="outlined"
-                            size="small"
-                            sx={{ mr: 2 }}
-                        >
-                            <MenuItem value="">
-                                <em>All Process</em>
-                            </MenuItem>
-                            {mesin.map((category) => (
-                                <MenuItem key={mesin.mesn_id} value={mesin.mesin_id}>
-                                    {mesin.nama_mesin}
-                                </MenuItem>
-                            ))}
-                        </Select>
                         <Button
                             variant="contained"
                             sx={{ bgcolor: '#005DB8', color: 'white' }}
@@ -269,7 +270,7 @@ const PartSpecification = () => {
                                             <StyledTableCell>{specification.nama_mesin}</StyledTableCell>
                                             <StyledTableCell>{specification.nama_spesifikasi}</StyledTableCell>
                                             <StyledTableCell>{specification.nilai_standar}</StyledTableCell>
-                                            <StyledTableCell>{specification.stok}</StyledTableCell> {/* masimenggunakan data dummy*/}
+                                            <StyledTableCell>{specification.stok}</StyledTableCell> {/* masi menggunakan data dummy*/}
                                             <StyledTableCell>
                                                 <ResponsiveButtonContainer>
                                                     <Button
@@ -326,23 +327,10 @@ const PartSpecification = () => {
         {editingSpecification ? 'Edit Specification' : 'Add New Specification'}
     </DialogTitle>
     <DialogContent>
-        {/* Specification Name */}
-        <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                Specification Name:
-            </Typography>
-            <TextField
-                margin="dense"
-                fullWidth
-                value={newSpecification.nama_spesifikasi || ''}
-                onChange={handleInputChange}
-                name="nama_spesifikasi"
-            />
-        </Box>
-        {/* Category */}
+         {/* Category */}
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                Process:
+                Machine Name:
             </Typography>
             <Select
                 margin="dense"
@@ -358,6 +346,19 @@ const PartSpecification = () => {
                 ))}
             </Select>
         </Box>
+        {/* Specification Name */}
+        <Box sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                Specification Name:
+            </Typography>
+            <TextField
+                margin="dense"
+                fullWidth
+                value={newSpecification.nama_spesifikasi || ''}
+                onChange={handleInputChange}
+                name="nama_spesifikasi"
+            />
+        </Box>
         {/* Standard Value */}
         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
@@ -369,6 +370,21 @@ const PartSpecification = () => {
                 value={newSpecification.nilai_standar || ''}
                 onChange={handleInputChange}
                 name="nilai_standar"
+            />
+        </Box>
+        {/* Standard Value */}
+        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                Stock:
+            </Typography>
+            <TextField
+                margin="dense"
+                fullWidth
+                value={newSpecification.stok || ''}
+                onChange={handleInputChange}
+                name="stok"
+                type="number"  
+                inputProps={{ min: 0 }} 
             />
         </Box>
     </DialogContent>

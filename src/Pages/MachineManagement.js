@@ -57,7 +57,7 @@ const MachineManagement = () => {
     const [rowsPerPage, setRowsPerPage] = useState(25);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
-    const [newMachine, setNewMachine] = useState({ nama_mesin: '', kode_mesin: '', kode_line: '', nama_kategori: '' });
+    const [newMachine, setNewMachine] = useState({ nama_mesin: '', kode_line: '', nama_kategori: '' });
     const [editingMachine, setEditingMachine] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
 
@@ -110,10 +110,10 @@ const MachineManagement = () => {
     const handleDialogOpen = (machine = null) => {
         if (machine) {
             setEditingMachine(machine);
-            setNewMachine({ nama_mesin: machine.nama_mesin, kode_mesin: machine.kode_mesin, kode_line: machine.kode_line, nama_kategori: machine.nama_kategori });
+            setNewMachine({ nama_mesin: machine.nama_mesin, kode_line: machine.kode_line, nama_kategori: machine.nama_kategori });
         } else {
             setEditingMachine(null);
-            setNewMachine({ nama_mesin: '', kode_mesin: '', kode_line: '', nama_kategori: '' });
+            setNewMachine({ nama_mesin: '', kode_line: '', nama_kategori: '' });
         }
         setOpenDialog(true);
     };
@@ -132,7 +132,7 @@ const MachineManagement = () => {
     };
 
     const addMachine = async () => {
-        if (!newMachine.nama_mesin || !newMachine.kode_mesin || !newMachine.kode_line || !newMachine.nama_kategori) {
+        if (!newMachine.nama_mesin ||!newMachine.kode_line || !newMachine.nama_kategori) {
             alert('All fields are required!');
             return;
         }
@@ -149,7 +149,7 @@ const MachineManagement = () => {
     };
 
     const updateMachine = async () => {
-        if (!newMachine.nama_mesin || !newMachine.kode_mesin || !newMachine.kode_line || !newMachine.nama_kategori) {
+        if (!newMachine.nama_mesin || !newMachine.kode_line || !newMachine.nama_kategori) {
             alert('All fields are required!');
             return;
         }
@@ -177,7 +177,7 @@ const MachineManagement = () => {
     };
 
     const isFormValid = () => {
-        return newMachine.nama_mesin && newMachine.kode_mesin && newMachine.kode_line && newMachine.nama_kategori;
+        return newMachine.nama_mesin &&  newMachine.kode_line && newMachine.nama_kategori;
     };
 
     return (
@@ -232,7 +232,6 @@ const MachineManagement = () => {
                             <TableRow>
                                 <StyledTableCell>No</StyledTableCell>
                                 <StyledTableCell>Machine Name</StyledTableCell>
-                                <StyledTableCell>Machine Code</StyledTableCell>
                                 <StyledTableCell>Line</StyledTableCell>
                                 <StyledTableCell>Process</StyledTableCell>
                                 <StyledTableCell>Action</StyledTableCell>
@@ -258,7 +257,6 @@ const MachineManagement = () => {
                                         <TableRow key={machine.mesin_id}>
                                             <StyledTableCell>{index + 1}</StyledTableCell>
                                             <StyledTableCell>{machine.nama_mesin}</StyledTableCell>
-                                            <StyledTableCell>{machine.kode_mesin}</StyledTableCell>
                                             <StyledTableCell>{machine.kode_line}</StyledTableCell>
                                             <StyledTableCell>{machine.nama_kategori}</StyledTableCell>
                                             <StyledTableCell>
@@ -331,22 +329,9 @@ const MachineManagement = () => {
                         name="nama_mesin"
                         />
                     </Box>
-                    {/* Machine Code */}
-                    <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
-                            Machine Code:
-                        </Typography>
-                        <TextField
-                        margin="dense"
-                        fullWidth
-                        value={newMachine.kode_mesin || ''}
-                        onChange={handleInputChange}
-                        name="kode_mesin"
-                        />
-                    </Box>
-                    {/* Line */}
-                   <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-                       <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
+                   {/* Line */}
+                <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Typography variant="body1" sx={{ width: '185px', height: '30px', padding: '5px 8px' }}>
                            Line:
                        </Typography>
                        <Select 
